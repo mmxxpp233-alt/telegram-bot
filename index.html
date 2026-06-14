@@ -6,12 +6,12 @@
 
 <title>newnumbervip</title>
 
-<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;800&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;700;800&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 
 <style>
 :root{
---bg:#070b18;
+--bg:#050814;
 --card:#111a2e;
 --primary:#7c6cff;
 --glow:#00f2ff;
@@ -19,50 +19,81 @@
 --muted:#9aa4b2;
 }
 
-*{margin:0;padding:0;box-sizing:border-box;font-family:'Cairo';}
+*{
+margin:0;
+padding:0;
+box-sizing:border-box;
+font-family:'Cairo';
+}
 
 body{
-background:var(--bg);
+background:url('https://i.postimg.cc/5NKhPQZr/1781442426779.png') center/cover fixed;
 color:var(--text);
 overflow-x:hidden;
+}
+
+/* overlay dark */
+body::before{
+content:"";
+position:fixed;
+top:0;left:0;
+width:100%;
+height:100%;
+background:rgba(0,0,0,0.65);
+z-index:-1;
 }
 
 /* ===== HERO ===== */
 .hero{
 text-align:center;
-padding:30px 20px;
-position:relative;
+padding:40px 20px;
 }
 
-.bg-blur{
-position:absolute;
-top:0;left:0;
-width:100%;
-height:220px;
-background:url('https://i.postimg.cc/vZps3xpJ/file-000000002878720ab1fd8c8b5f702d6c.png') center/cover;
-filter:blur(20px);
-opacity:0.3;
-z-index:-1;
+.avatar-wrap{
+position:relative;
+width:140px;
+height:140px;
+margin:auto;
 }
 
 .avatar{
-width:120px;
-height:120px;
+width:140px;
+height:140px;
 border-radius:50%;
-margin:auto;
+object-fit:cover;
 border:3px solid var(--glow);
-box-shadow:0 0 25px var(--glow);
-animation:spinGlow 3s linear infinite;
+box-shadow:0 0 20px var(--glow);
+animation:pulse 2s infinite;
 }
 
-@keyframes spinGlow{
+/* neon ring */
+.avatar-wrap::before{
+content:"";
+position:absolute;
+top:-10px;
+left:-10px;
+width:160px;
+height:160px;
+border-radius:50%;
+border:2px solid var(--primary);
+animation:rotate 3s linear infinite;
+box-shadow:0 0 20px var(--primary);
+}
+
+@keyframes rotate{
+0%{transform:rotate(0deg);}
+100%{transform:rotate(360deg);}
+}
+
+@keyframes pulse{
 0%{box-shadow:0 0 10px var(--glow);}
 50%{box-shadow:0 0 30px #7c6cff;}
 100%{box-shadow:0 0 10px var(--glow);}
 }
 
+/* TITLE */
 .title{
-font-size:28px;
+font-size:30px;
 font-weight:800;
 margin-top:15px;
 background:linear-gradient(90deg,#7c6cff,#00f2ff);
@@ -73,27 +104,27 @@ animation:move 2s infinite alternate;
 
 @keyframes move{
 from{letter-spacing:1px;}
-to{letter-spacing:4px;}
+to{letter-spacing:5px;}
 }
 
 .desc{
-color:var(--muted);
+color:#c7d0df;
 margin-top:10px;
 font-size:14px;
 }
 
-/* ===== MENU ICON ===== */
-.menu-icon{
+/* ===== MENU ===== */
+.menu-btn{
 position:fixed;
 top:20px;
 right:15px;
-background:var(--card);
 width:50px;
 height:50px;
+background:var(--card);
+border-radius:12px;
 display:flex;
 align-items:center;
 justify-content:center;
-border-radius:12px;
 cursor:pointer;
 border:1px solid #1f2a44;
 }
@@ -116,8 +147,8 @@ background:transparent;
 border:none;
 color:#fff;
 padding:8px;
-text-align:right;
 cursor:pointer;
+text-align:right;
 }
 
 .menu button:hover{
@@ -125,16 +156,16 @@ background:var(--primary);
 border-radius:8px;
 }
 
-/* ===== CONTENT ===== */
+/* CONTENT */
 .box{
 margin:20px;
-background:var(--card);
+background:rgba(17,26,46,0.9);
 padding:15px;
 border-radius:15px;
 border:1px solid #1f2a44;
+backdrop-filter:blur(10px);
 }
 
-/* ===== GRID ===== */
 .grid{
 display:grid;
 grid-template-columns:repeat(3,1fr);
@@ -142,19 +173,15 @@ gap:10px;
 }
 
 .item{
-background:var(--card);
+background:rgba(0,0,0,0.3);
 padding:15px;
 border-radius:12px;
 border:1px solid #1f2a44;
-cursor:pointer;
 text-align:center;
+cursor:pointer;
 }
 
-.item:hover{
-background:rgba(124,108,255,0.2);
-}
-
-/* FLOAT TELEGRAM */
+/* TELEGRAM */
 .tg{
 position:fixed;
 bottom:20px;
@@ -166,8 +193,8 @@ border-radius:50%;
 display:flex;
 align-items:center;
 justify-content:center;
-cursor:pointer;
 box-shadow:0 0 20px #7c6cff;
+cursor:pointer;
 }
 
 </style>
@@ -175,95 +202,99 @@ box-shadow:0 0 20px #7c6cff;
 
 <body>
 
-<div class="bg-blur"></div>
-
 <!-- MENU -->
-<div class="menu-icon" onclick="toggleMenu()">
+<div class="menu-btn" onclick="toggleMenu()">
 <i class="fa fa-gear"></i>
 </div>
 
 <div class="menu" id="menu">
+<button onclick="show('home')">🏠 الرئيسية</button>
 <button onclick="show('countries')">🌍 الدول</button>
 <button onclick="show('numbers')">📱 الأرقام</button>
 <button onclick="show('orders')">🧾 الطلبات</button>
-<button onclick="show('stats')">📊 الإحصائيات</button>
 <button onclick="show('payment')">💳 الدفع</button>
 </div>
 
 <!-- HERO -->
 <div class="hero">
 
-<img class="avatar" src="https://i.postimg.cc/vZps3xpJ/file-000000002878720ab1fd8c8b5f702d6c.png">
+<div class="avatar-wrap">
+<img class="avatar" src="https://i.postimg.cc/FHjYbv6L/IMG-20260614-160146.png">
+</div>
 
 <div class="title">newnumbervip</div>
 <div class="desc">
-أهلاً بك في أقوى منصة للأرقام الافتراضية
+أهلاً بك في أقوى موقع للأرقام الافتراضية
 </div>
 </div>
 
 <!-- CONTENT -->
 <div class="box" id="content">
-<h3>اختر من القائمة ⚙️</h3>
+<h3>اضغط على ⚙️ لبدء التصفح</h3>
 </div>
 
 <!-- TELEGRAM -->
-<div class="tg" onclick="window.open('https://t.me/YOUR_USERNAME')">
+<div class="tg" onclick="window.open('https://t.me/ATTACK_V12')">
 <i class="fa-brands fa-telegram"></i>
 </div>
 
 <script>
 
+const data = {
+egypt:["+20 100 111 2222 - 50 جنيه"],
+ksa:["+966 55 123 4567 - 5 ريال"],
+usa:["+1 202 555 0101 - 2 دولار"]
+};
+
 function toggleMenu(){
 let m=document.getElementById("menu");
-m.style.display = (m.style.display==="flex")?"none":"flex";
+m.style.display=(m.style.display==="flex")?"none":"flex";
 }
 
 function show(type){
 
 let c=document.getElementById("content");
 
-if(type==="countries"){
-c.innerHTML=`
-<h3>الدول المتاحة</h3>
-<div class="grid">
-<div class="item" onclick="openCountry('مصر')">🇪🇬 مصر</div>
-<div class="item">🇸🇦 السعودية</div>
-<div class="item">🇺🇸 أمريكا</div>
-<div class="item">🇦🇪 الإمارات</div>
-<div class="item">🇬🇧 بريطانيا</div>
-</div>
-`;
+if(type==="home"){
+c.innerHTML="<h3>مرحباً 👋</h3><p>ابدأ من الدول</p>";
 }
 
-if(type==="numbers"){
+if(type==="countries"){
 c.innerHTML=`
-<h3>الأرقام</h3>
-<p>اختار دولة الأول</p>
+<h3>الدول</h3>
+<div class="grid">
+<div class="item" onclick="openCountry('مصر','egypt')">🇪🇬 مصر</div>
+<div class="item" onclick="openCountry('السعودية','ksa')">🇸🇦 السعودية</div>
+<div class="item" onclick="openCountry('أمريكا','usa')">🇺🇸 أمريكا</div>
+</div>
 `;
 }
 
 if(type==="orders"){
-c.innerHTML="<h3>الطلبات</h3><p>لا يوجد طلبات</p>";
-}
-
-if(type==="stats"){
-c.innerHTML="<h3>الإحصائيات</h3><p>زيارات: 11,000 - أرباح: $4000</p>";
+c.innerHTML="<h3>الطلبات</h3><p>لا يوجد طلبات حالياً</p>";
 }
 
 if(type==="payment"){
-c.innerHTML="<h3>طرق الدفع</h3><p>Vodafone Cash - InstaPay</p>";
+c.innerHTML="<h3>الدفع</h3><p>Vodafone Cash / InstaPay</p>";
 }
 
 }
 
-function openCountry(name){
-document.getElementById("content").innerHTML=`
-<h3>${name}</h3>
-<div class="grid">
-<div class="item">رقم + سعر 10$</div>
-<div class="item">رقم + سعر 12$</div>
-</div>
-`;
+function openCountry(name,key){
+
+let html=`<h3>${name}</h3><div class="grid">`;
+
+data[key].forEach(n=>{
+html+=`<div class="item">${n}<br><button onclick="buy()">شراء</button></div>`;
+});
+
+html+=`</div>`;
+
+document.getElementById("content").innerHTML=html;
+}
+
+function buy(){
+alert("سيتم تحويلك للدفع");
 }
 
 </script>
