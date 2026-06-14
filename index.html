@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Number Store</title>
+
+<style>
+body{
+margin:0;
+font-family:Arial;
+background:#0b0f1a;
+color:white;
+}
+
+header{
+display:flex;
+justify-content:space-between;
+align-items:center;
+padding:15px 20px;
+background:#11182a;
+position:sticky;
+top:0;
+}
+
+.logo{
+font-weight:bold;
+color:#8b5cf6;
+}
+
+.container{
+padding:20px;
+}
+
+.hero{
+background:linear-gradient(135deg,#1a1f35,#0b0f1a);
+padding:25px;
+border-radius:15px;
+margin-bottom:20px;
+}
+
+.hero h1{
+margin:0;
+color:#a78bfa;
+}
+
+.grid{
+display:grid;
+grid-template-columns:repeat(auto-fit,minmax(140px,1fr));
+gap:10px;
+margin-top:15px;
+}
+
+.card{
+background:#151c2f;
+padding:10px;
+border-radius:12px;
+cursor:pointer;
+transition:0.2s;
+text-align:center;
+border:1px solid #222b45;
+}
+
+.card:hover{
+transform:scale(1.05);
+border-color:#8b5cf6;
+}
+
+.card img{
+width:40px;
+height:25px;
+}
+
+.numbers{
+margin-top:20px;
+}
+
+.number{
+display:flex;
+justify-content:space-between;
+background:#151c2f;
+padding:10px;
+border-radius:10px;
+margin-bottom:10px;
+align-items:center;
+}
+
+.btn{
+background:#8b5cf6;
+padding:5px 10px;
+border:none;
+color:white;
+border-radius:8px;
+cursor:pointer;
+}
+
+.btn:hover{
+background:#a78bfa;
+}
+
+.floating{
+position:fixed;
+bottom:20px;
+left:20px;
+background:#25D366;
+padding:12px;
+border-radius:50px;
+cursor:pointer;
+font-size:14px;
+}
+
+.payment{
+margin-top:25px;
+display:grid;
+grid-template-columns:1fr 1fr;
+gap:10px;
+}
+
+.paybox{
+background:#151c2f;
+padding:15px;
+border-radius:12px;
+}
+
+</style>
+</head>
+
+<body>
+
+<header>
+<div class="logo">Number Plus</div>
+<div>متجر الأرقام</div>
+</header>
+
+<div class="container">
+
+<div class="hero">
+<h1>أفضل متجر لبيع الأرقام</h1>
+<p>اختار الدولة واشتري الرقم بسهولة</p>
+</div>
+
+<h3>اختر الدولة</h3>
+<div class="grid" id="countries"></div>
+
+<div class="numbers">
+<h3>الأرقام المتاحة</h3>
+<div id="numbers"></div>
+</div>
+
+<div class="payment">
+<div class="paybox">
+<h4>كاش</h4>
+<p>الدفع عند الاستلام أو تحويل يدوي</p>
+</div>
+
+<div class="paybox">
+<h4>Instapay</h4>
+<p>تحويل فوري وآمن</p>
+</div>
+</div>
+
+</div>
+
+<div class="floating" onclick="contact()">
+💬 تواصل مع المطور
+</div>
+
+<script>
+
+const countries = [
+{name:"مصر",code:"+20"},
+{name:"السعودية",code:"+966"},
+{name:"أمريكا",code:"+1"},
+{name:"تركيا",code:"+90"}
+];
+
+const numbersData = {
+"مصر":["+20 100 123 4567","+20 101 987 6543"],
+"السعودية":["+966 55 111 2222","+966 50 333 4444"],
+"أمريكا":["+1 202 555 0199","+1 202 555 0111"],
+"تركيا":["+90 532 111 2233"]
+};
+
+let selected = "مصر";
+
+function loadCountries(){
+let box = document.getElementById("countries");
+countries.forEach(c=>{
+let div = document.createElement("div");
+div.className="card";
+div.innerHTML=`<b>${c.name}</b><br>${c.code}`;
+div.onclick=()=>{selected=c.name;loadNumbers();};
+box.appendChild(div);
+});
+}
+
+function loadNumbers(){
+let box = document.getElementById("numbers");
+box.innerHTML="";
+(numbersData[selected]||[]).forEach(n=>{
+let div = document.createElement("div");
+div.className="number";
+div.innerHTML=`
+<span>${n}</span>
+<button class="btn" onclick="buy('${n}')">شراء</button>
+`;
+box.appendChild(div);
+});
+}
+
+function buy(num){
+alert("تم اختيار الرقم: " + num);
+}
+
+function contact(){
+window.open("https://t.me/YOUR_USERNAME","_blank");
+}
+
+loadCountries();
+loadNumbers();
+
+</script>
+
+</body>
+</html>
