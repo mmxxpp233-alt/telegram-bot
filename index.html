@@ -1,94 +1,81 @@
 const express = require("express");
 const cors = require("cors");
-const path = require("path");
 const TelegramBot = require("node-telegram-bot-api");
 
 const app = express();
 app.use(cors());
 app.use(express.json());
 
-// ================== 🔑 PLACE YOUR BOT TOKEN HERE ==================
-const BOT_TOKEN = "8711778932:AAG1pn8uHW5HtSm2ZcRfL1BSGQ-IBUx0dnw"; // 👈 حط التوكن هنا
+// ===================== CONFIG =====================
+const BOT_TOKEN = "PUT_YOUR_BOT_TOKEN_HERE"; // 👈 هنا التوكن
 const ADMIN_ID = "7771042305";
-// ================================================================
+// ==================================================
 
+const bot = new TelegramBot(BOT_TOKEN, { polling: true });
+
+// ===================== DATA =====================
 let countries = [
   { name: "مصر", key: "egypt" },
-  { name: "السعودية", key: "ksa" }
+  { name: "السعودية", key: "ksa" },
+  { name: "أمريكا", key: "usa" }
 ];
 
 let numbers = {
   egypt: [
-    { number: "+20 100 111 2222", price: "50 جنيه" }
+    { number: "+20 100 111 2222", price: "50 EGP" }
   ],
   ksa: [
-    { number: "+966 55 123 4567", price: "5 ريال" }
+    { number: "+966 55 123 4567", price: "5 SAR" }
+  ],
+  usa: [
+    { number: "+1 202 555 0101", price: "2 USD" }
   ]
 };
 
 let orders = [];
 
-// BOT
-const bot = new TelegramBot(BOT_TOKEN, { polling: true });
-
-function sendOrder(order) {
+// ===================== TELEGRAM =====================
+function sendOrder(order){
   bot.sendMessage(ADMIN_ID,
 `
 🔥 NEW ORDER VIP
 
 🌍 Country: ${order.country}
 📱 Number: ${order.number}
+💰 Payment: ${order.payment}
 👤 User: ${order.user}
 `);
 }
 
-// ============ API ============
+// ===================== API =====================
+app.get("/api/countries",(req,res)=>res.json(countries));
 
-// countries
-app.get("/api/countries", (req, res) => {
-  res.json(countries);
-});
-
-// numbers
-app.get("/api/numbers/:key", (req, res) => {
+app.get("/api/numbers/:key",(req,res)=>{
   res.json(numbers[req.params.key] || []);
 });
 
-// create order
-app.post("/api/order", (req, res) => {
+app.post("/api/order",(req,res)=>{
   const order = req.body;
   orders.push(order);
-
   sendOrder(order);
-
-  res.json({ success: true });
+  res.json({ok:true});
 });
 
-// admin add country
-app.post("/api/admin/country", (req, res) => {
-  countries.push(req.body);
-  res.json({ ok: true });
+// ===================== ADMIN (hidden endpoint) =====================
+app.get("/admin-data",(req,res)=>{
+  if(req.query.id !== ADMIN_ID) return res.send("no access");
+  res.json({countries,numbers,orders});
 });
 
-// admin add number
-app.post("/api/admin/number", (req, res) => {
-  const { countryKey, number, price } = req.body;
+// ===================== FRONTEND =====================
+app.get("/",(req,res)=>{
 
-  if (!numbers[countryKey]) numbers[countryKey] = [];
-
-  numbers[countryKey].push({ number, price });
-
-  res.json({ ok: true });
-});
-
-// ================= FRONTEND =================
-
-app.get("/", (req, res) => {
-  res.send(`
+res.send(`
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
 <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <title>new number VIP</title>
 
 <style>
@@ -98,11 +85,13 @@ font-family:Arial;
 background:#050814;
 color:white;
 text-align:center;
+overflow-x:hidden;
+user-select:none;
+touch-action:manipulation;
 }
 
 .title{
 font-size:45px;
-font-weight:bold;
 background:linear-gradient(90deg,#ffd700,#fff3b0,#ffd700);
 -webkit-background-clip:text;
 -webkit-text-fill-color:transparent;
@@ -119,26 +108,38 @@ animation:shine 2s infinite;
 width:130px;
 height:130px;
 border-radius:50%;
-border:2px solid #7c6cff;
-box-shadow:0 0 20px #00f2ff;
+box-shadow:0 0 25px #00f2ff;
 margin-top:10px;
+animation:float 3s infinite ease-in-out;
 }
 
-button{
+@keyframes float{
+0%{transform:translateY(0);}
+50%{transform:translateY(-10px);}
+100%{transform:translateY(0);}
+}
+
+.menu button{
 margin:5px;
 padding:10px;
+border:none;
+border-radius:10px;
 background:#111a2e;
 color:white;
-border:none;
-border-radius:8px;
 cursor:pointer;
 }
 
-button:hover{
+.menu button:hover{
 background:#7c6cff;
 }
-</style>
 
+.card{
+background:#111a2e;
+margin:10px;
+padding:10px;
+border-radius:10px;
+}
+</style>
 </head>
 
 <body>
@@ -147,74 +148,89 @@ background:#7c6cff;
 
 <img class="avatar" src="https://i.postimg.cc/5NKhPQZr/1781442426779.png">
 
-<br><br>
-
+<div class="menu">
 <button onclick="loadCountries()">الدول</button>
-<button onclick="loadOrders()">الطلبات</button>
+<button onclick="showPayment()">الدفع</button>
+<button onclick="showOrders()">الطلبات</button>
+</div>
 
 <div id="content"></div>
 
 <script>
 
 async function loadCountries(){
-  const res = await fetch('/api/countries');
-  const data = await res.json();
+const res = await fetch('/api/countries');
+const data = await res.json();
 
-  let html = "<h2>الدول</h2>";
+let html = "<h2>الدول</h2>";
 
-  data.forEach(c=>{
-    html += `<button onclick="loadNumbers('${c.key}','${c.name}')">${c.name}</button>`;
-  });
+data.forEach(c=>{
+html += `<button onclick="loadNumbers('${c.key}','${c.name}')">${c.name}</button>`;
+});
 
-  document.getElementById("content").innerHTML = html;
+document.getElementById("content").innerHTML = html;
 }
 
 async function loadNumbers(key,name){
-  const res = await fetch('/api/numbers/'+key);
-  const data = await res.json();
+const res = await fetch('/api/numbers/'+key);
+const data = await res.json();
 
-  let html = `<h2>${name}</h2>`;
+let html = `<h2>${name}</h2>`;
 
-  data.forEach(n=>{
-    html += `
-      <div>
-        ${n.number} - ${n.price}
-        <button onclick="buy('${name}','${n.number}')">شراء</button>
-      </div>
-    `;
-  });
+data.forEach(n=>{
+html += `
+<div class='card'>
+${n.number}<br>
+${n.price}<br>
+<button onclick="buy('${name}','${n.number}')">شراء</button>
+</div>
+`;
+});
 
-  document.getElementById("content").innerHTML = html;
+document.getElementById("content").innerHTML = html;
 }
 
 async function buy(country,number){
-  await fetch('/api/order',{
-    method:'POST',
-    headers:{'Content-Type':'application/json'},
-    body: JSON.stringify({
-      country,
-      number,
-      user:"@user"
-    })
-  });
 
-  alert("تم إرسال الطلب 🔥");
+let payment = prompt("اختر الدفع: Vodafone / InstaPay / MSTY");
+
+await fetch('/api/order',{
+method:'POST',
+headers:{'Content-Type':'application/json'},
+body:JSON.stringify({
+country,
+number,
+payment,
+user:"@user"
+})
+});
+
+alert("تم إرسال الطلب 🔥");
 }
 
-function loadOrders(){
-  document.getElementById("content").innerHTML =
-  "<h2>الطلبات</h2><p>سيتم تطويرها في لوحة الأدمن</p>";
+function showPayment(){
+document.getElementById("content").innerHTML = \`
+<div class='card'>
+💳 طرق الدفع:<br><br>
+Vodafone Cash<br>
+InstaPay<br>
+MSTY Pay (placeholder)
+</div>
+\`;
+}
+
+function showOrders(){
+document.getElementById("content").innerHTML =
+"<h3>سيتم تحديث الطلبات من الأدمن</h3>";
 }
 
 </script>
 
 </body>
 </html>
-  `);
+`);
+
 });
 
-// ================= START =================
-
-app.listen(3000, () => {
-  console.log("🔥 Server running on port 3000");
-});
+// ===================== START =====================
+app.listen(3000,()=>console.log("VIP SYSTEM RUNNING 🔥"));
