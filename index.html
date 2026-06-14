@@ -1,303 +1,220 @@
+const express = require("express");
+const cors = require("cors");
+const path = require("path");
+const TelegramBot = require("node-telegram-bot-api");
+
+const app = express();
+app.use(cors());
+app.use(express.json());
+
+// ================== 🔑 PLACE YOUR BOT TOKEN HERE ==================
+const BOT_TOKEN = "8711778932:AAG1pn8uHW5HtSm2ZcRfL1BSGQ-IBUx0dnw"; // 👈 حط التوكن هنا
+const ADMIN_ID = "7771042305";
+// ================================================================
+
+let countries = [
+  { name: "مصر", key: "egypt" },
+  { name: "السعودية", key: "ksa" }
+];
+
+let numbers = {
+  egypt: [
+    { number: "+20 100 111 2222", price: "50 جنيه" }
+  ],
+  ksa: [
+    { number: "+966 55 123 4567", price: "5 ريال" }
+  ]
+};
+
+let orders = [];
+
+// BOT
+const bot = new TelegramBot(BOT_TOKEN, { polling: true });
+
+function sendOrder(order) {
+  bot.sendMessage(ADMIN_ID,
+`
+🔥 NEW ORDER VIP
+
+🌍 Country: ${order.country}
+📱 Number: ${order.number}
+👤 User: ${order.user}
+`);
+}
+
+// ============ API ============
+
+// countries
+app.get("/api/countries", (req, res) => {
+  res.json(countries);
+});
+
+// numbers
+app.get("/api/numbers/:key", (req, res) => {
+  res.json(numbers[req.params.key] || []);
+});
+
+// create order
+app.post("/api/order", (req, res) => {
+  const order = req.body;
+  orders.push(order);
+
+  sendOrder(order);
+
+  res.json({ success: true });
+});
+
+// admin add country
+app.post("/api/admin/country", (req, res) => {
+  countries.push(req.body);
+  res.json({ ok: true });
+});
+
+// admin add number
+app.post("/api/admin/number", (req, res) => {
+  const { countryKey, number, price } = req.body;
+
+  if (!numbers[countryKey]) numbers[countryKey] = [];
+
+  numbers[countryKey].push({ number, price });
+
+  res.json({ ok: true });
+});
+
+// ================= FRONTEND =================
+
+app.get("/", (req, res) => {
+  res.send(`
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-<title>newnumbervip</title>
-
-<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;700;800&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+<title>new number VIP</title>
 
 <style>
-:root{
---bg:#050814;
---card:#111a2e;
---primary:#7c6cff;
---glow:#00f2ff;
---text:#fff;
---muted:#9aa4b2;
-}
-
-*{
-margin:0;
-padding:0;
-box-sizing:border-box;
-font-family:'Cairo';
-}
-
 body{
-background:url('https://i.postimg.cc/5NKhPQZr/1781442426779.png') center/cover fixed;
-color:var(--text);
-overflow-x:hidden;
-}
-
-/* overlay dark */
-body::before{
-content:"";
-position:fixed;
-top:0;left:0;
-width:100%;
-height:100%;
-background:rgba(0,0,0,0.65);
-z-index:-1;
-}
-
-/* ===== HERO ===== */
-.hero{
+margin:0;
+font-family:Arial;
+background:#050814;
+color:white;
 text-align:center;
-padding:40px 20px;
 }
 
-.avatar-wrap{
-position:relative;
-width:140px;
-height:140px;
-margin:auto;
+.title{
+font-size:45px;
+font-weight:bold;
+background:linear-gradient(90deg,#ffd700,#fff3b0,#ffd700);
+-webkit-background-clip:text;
+-webkit-text-fill-color:transparent;
+animation:shine 2s infinite;
+}
+
+@keyframes shine{
+0%{filter:drop-shadow(0 0 5px gold);}
+50%{filter:drop-shadow(0 0 20px gold);}
+100%{filter:drop-shadow(0 0 5px gold);}
 }
 
 .avatar{
-width:140px;
-height:140px;
+width:130px;
+height:130px;
 border-radius:50%;
-object-fit:cover;
-border:3px solid var(--glow);
-box-shadow:0 0 20px var(--glow);
-animation:pulse 2s infinite;
-}
-
-/* neon ring */
-.avatar-wrap::before{
-content:"";
-position:absolute;
-top:-10px;
-left:-10px;
-width:160px;
-height:160px;
-border-radius:50%;
-border:2px solid var(--primary);
-animation:rotate 3s linear infinite;
-box-shadow:0 0 20px var(--primary);
-}
-
-@keyframes rotate{
-0%{transform:rotate(0deg);}
-100%{transform:rotate(360deg);}
-}
-
-@keyframes pulse{
-0%{box-shadow:0 0 10px var(--glow);}
-50%{box-shadow:0 0 30px #7c6cff;}
-100%{box-shadow:0 0 10px var(--glow);}
-}
-
-/* TITLE */
-.title{
-font-size:30px;
-font-weight:800;
-margin-top:15px;
-background:linear-gradient(90deg,#7c6cff,#00f2ff);
--webkit-background-clip:text;
--webkit-text-fill-color:transparent;
-animation:move 2s infinite alternate;
-}
-
-@keyframes move{
-from{letter-spacing:1px;}
-to{letter-spacing:5px;}
-}
-
-.desc{
-color:#c7d0df;
+border:2px solid #7c6cff;
+box-shadow:0 0 20px #00f2ff;
 margin-top:10px;
-font-size:14px;
 }
 
-/* ===== MENU ===== */
-.menu-btn{
-position:fixed;
-top:20px;
-right:15px;
-width:50px;
-height:50px;
-background:var(--card);
-border-radius:12px;
-display:flex;
-align-items:center;
-justify-content:center;
-cursor:pointer;
-border:1px solid #1f2a44;
-}
-
-.menu{
-position:fixed;
-top:80px;
-right:15px;
-background:var(--card);
+button{
+margin:5px;
 padding:10px;
-border-radius:12px;
-display:none;
-flex-direction:column;
-gap:10px;
-border:1px solid #1f2a44;
-}
-
-.menu button{
-background:transparent;
+background:#111a2e;
+color:white;
 border:none;
-color:#fff;
-padding:8px;
-cursor:pointer;
-text-align:right;
-}
-
-.menu button:hover{
-background:var(--primary);
 border-radius:8px;
-}
-
-/* CONTENT */
-.box{
-margin:20px;
-background:rgba(17,26,46,0.9);
-padding:15px;
-border-radius:15px;
-border:1px solid #1f2a44;
-backdrop-filter:blur(10px);
-}
-
-.grid{
-display:grid;
-grid-template-columns:repeat(3,1fr);
-gap:10px;
-}
-
-.item{
-background:rgba(0,0,0,0.3);
-padding:15px;
-border-radius:12px;
-border:1px solid #1f2a44;
-text-align:center;
 cursor:pointer;
 }
 
-/* TELEGRAM */
-.tg{
-position:fixed;
-bottom:20px;
-left:20px;
-width:55px;
-height:55px;
+button:hover{
 background:#7c6cff;
-border-radius:50%;
-display:flex;
-align-items:center;
-justify-content:center;
-box-shadow:0 0 20px #7c6cff;
-cursor:pointer;
 }
-
 </style>
+
 </head>
 
 <body>
 
-<!-- MENU -->
-<div class="menu-btn" onclick="toggleMenu()">
-<i class="fa fa-gear"></i>
-</div>
+<h1 class="title">new number VIP</h1>
 
-<div class="menu" id="menu">
-<button onclick="show('home')">🏠 الرئيسية</button>
-<button onclick="show('countries')">🌍 الدول</button>
-<button onclick="show('numbers')">📱 الأرقام</button>
-<button onclick="show('orders')">🧾 الطلبات</button>
-<button onclick="show('payment')">💳 الدفع</button>
-</div>
+<img class="avatar" src="https://i.postimg.cc/5NKhPQZr/1781442426779.png">
 
-<!-- HERO -->
-<div class="hero">
+<br><br>
 
-<div class="avatar-wrap">
-<img class="avatar" src="https://i.postimg.cc/FHjYbv6L/IMG-20260614-160146.png">
-</div>
+<button onclick="loadCountries()">الدول</button>
+<button onclick="loadOrders()">الطلبات</button>
 
-<div class="title">newnumbervip</div>
-<div class="desc">
-أهلاً بك في أقوى موقع للأرقام الافتراضية
-</div>
-</div>
-
-<!-- CONTENT -->
-<div class="box" id="content">
-<h3>اضغط على ⚙️ لبدء التصفح</h3>
-</div>
-
-<!-- TELEGRAM -->
-<div class="tg" onclick="window.open('https://t.me/ATTACK_V12')">
-<i class="fa-brands fa-telegram"></i>
-</div>
+<div id="content"></div>
 
 <script>
 
-const data = {
-egypt:["+20 100 111 2222 - 50 جنيه"],
-ksa:["+966 55 123 4567 - 5 ريال"],
-usa:["+1 202 555 0101 - 2 دولار"]
-};
+async function loadCountries(){
+  const res = await fetch('/api/countries');
+  const data = await res.json();
 
-function toggleMenu(){
-let m=document.getElementById("menu");
-m.style.display=(m.style.display==="flex")?"none":"flex";
+  let html = "<h2>الدول</h2>";
+
+  data.forEach(c=>{
+    html += `<button onclick="loadNumbers('${c.key}','${c.name}')">${c.name}</button>`;
+  });
+
+  document.getElementById("content").innerHTML = html;
 }
 
-function show(type){
+async function loadNumbers(key,name){
+  const res = await fetch('/api/numbers/'+key);
+  const data = await res.json();
 
-let c=document.getElementById("content");
+  let html = `<h2>${name}</h2>`;
 
-if(type==="home"){
-c.innerHTML="<h3>مرحباً 👋</h3><p>ابدأ من الدول</p>";
+  data.forEach(n=>{
+    html += `
+      <div>
+        ${n.number} - ${n.price}
+        <button onclick="buy('${name}','${n.number}')">شراء</button>
+      </div>
+    `;
+  });
+
+  document.getElementById("content").innerHTML = html;
 }
 
-if(type==="countries"){
-c.innerHTML=`
-<h3>الدول</h3>
-<div class="grid">
-<div class="item" onclick="openCountry('مصر','egypt')">🇪🇬 مصر</div>
-<div class="item" onclick="openCountry('السعودية','ksa')">🇸🇦 السعودية</div>
-<div class="item" onclick="openCountry('أمريكا','usa')">🇺🇸 أمريكا</div>
-</div>
-`;
+async function buy(country,number){
+  await fetch('/api/order',{
+    method:'POST',
+    headers:{'Content-Type':'application/json'},
+    body: JSON.stringify({
+      country,
+      number,
+      user:"@user"
+    })
+  });
+
+  alert("تم إرسال الطلب 🔥");
 }
 
-if(type==="orders"){
-c.innerHTML="<h3>الطلبات</h3><p>لا يوجد طلبات حالياً</p>";
-}
-
-if(type==="payment"){
-c.innerHTML="<h3>الدفع</h3><p>Vodafone Cash / InstaPay</p>";
-}
-
-}
-
-function openCountry(name,key){
-
-let html=`<h3>${name}</h3><div class="grid">`;
-
-data[key].forEach(n=>{
-html+=`<div class="item">${n}<br><button onclick="buy()">شراء</button></div>`;
-});
-
-html+=`</div>`;
-
-document.getElementById("content").innerHTML=html;
-}
-
-function buy(){
-alert("سيتم تحويلك للدفع");
+function loadOrders(){
+  document.getElementById("content").innerHTML =
+  "<h2>الطلبات</h2><p>سيتم تطويرها في لوحة الأدمن</p>";
 }
 
 </script>
 
 </body>
 </html>
+  `);
+});
+
+// ================= START =================
+
+app.listen(3000, () => {
+  console.log("🔥 Server running on port 3000");
+});
