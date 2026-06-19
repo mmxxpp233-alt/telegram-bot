@@ -2,19 +2,11 @@
 <html lang="ar" dir="rtl">
 
 <head>
-
 <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>FARAON BOTS - SaaS Platform</title>
 
-<meta name="viewport"
-content="width=device-width,
-initial-scale=1.0,
-maximum-scale=1.0,
-user-scalable=no">
-
-<title>NUMBER VIP</title>
-
-<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&display=swap"
-rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&display=swap" rel="stylesheet">
 
 <style>
 
@@ -23,857 +15,261 @@ margin:0;
 padding:0;
 box-sizing:border-box;
 font-family:'Cairo',sans-serif;
--webkit-tap-highlight-color:transparent;
 }
 
 body{
-
-background:#000;
+background:#05070a;
 color:#fff;
-
-min-height:100vh;
-
 display:flex;
+min-height:100vh;
+}
 
-justify-content:center;
-
-align-items:center;
-
+/* SIDEBAR */
+.sidebar{
+width:260px;
+background:#0b0f14;
+border-left:1px solid #1aff1a22;
 padding:20px;
-
-overflow:hidden;
-
-position:relative;
 }
-
-body::before{
-
-content:"";
-
-position:fixed;
-
-inset:0;
-
-background:
-linear-gradient(rgba(0,0,0,.93),
-rgba(0,0,0,.93)),
-
-url('https://images.unsplash.com/photo-1518770660439-4636190af475?q=80&w=1200&auto=format&fit=crop')
-center/cover;
-
-opacity:.15;
-
-z-index:-1;
-}
-
-.container{
-
-width:100%;
-
-max-width:420px;
-
-background:rgba(5,15,5,.96);
-
-border:2px solid #16ff16;
-
-border-radius:22px;
-
-padding:25px 20px;
-
-text-align:center;
-
-box-shadow:
-0 0 20px rgba(0,255,0,.25),
-0 0 50px rgba(0,255,0,.12);
-
-display:none;
-}
-
-.active{
-display:block;
-}
-
-/* LOGO */
 
 .logo{
-
-width:125px;
-
-height:125px;
-
-border-radius:50%;
-
-margin:auto;
-
-overflow:hidden;
-
-border:3px solid #16ff16;
-
-animation:glow 2s infinite alternate;
+color:#1aff1a;
+font-size:20px;
+font-weight:bold;
+margin-bottom:25px;
 }
 
-@keyframes glow{
-
-0%{
-
-box-shadow:
-0 0 10px #16ff16,
-0 0 20px #16ff16;
-}
-
-100%{
-
-box-shadow:
-0 0 25px #16ff16,
-0 0 50px #16ff16,
-0 0 75px #16ff16;
-}
-}
-
-.logo img{
-
+.menu button{
 width:100%;
-height:100%;
-object-fit:cover;
+margin-top:10px;
+padding:10px;
+background:#111;
+border:1px solid #1aff1a33;
+color:#fff;
+cursor:pointer;
+border-radius:8px;
+transition:.3s;
 }
 
-/* TITLE */
+.menu button:hover{
+background:#1aff1a22;
+}
+
+/* MAIN */
+.main{
+flex:1;
+padding:20px;
+}
+
+/* TOP BAR */
+.topbar{
+display:flex;
+justify-content:space-between;
+align-items:center;
+margin-bottom:20px;
+}
 
 .title{
-
-color:#16ff16;
-
-margin-top:16px;
-
-font-size:29px;
-
-font-weight:700;
-
-letter-spacing:1px;
-
-text-shadow:
-0 0 10px #16ff16,
-0 0 25px #16ff16;
-}
-
-/* STATUS */
-
-.status{
-
-display:inline-flex;
-
-align-items:center;
-
-gap:8px;
-
-margin-top:18px;
-
-padding:6px 16px;
-
-border-radius:30px;
-
-border:1px solid rgba(0,255,0,.35);
-
-background:rgba(0,255,0,.08);
-
-color:#16ff16;
-
-font-size:12px;
-}
-
-.dot{
-
-width:8px;
-
-height:8px;
-
-border-radius:50%;
-
-background:#16ff16;
-
-animation:blink 1s infinite;
-}
-
-@keyframes blink{
-
-0%{
-
-opacity:1;
-
-box-shadow:
-0 0 5px #16ff16,
-0 0 15px #16ff16;
-}
-
-50%{
-
-opacity:.2;
-
-box-shadow:none;
-}
-
-100%{
-
-opacity:1;
-
-box-shadow:
-0 0 5px #16ff16,
-0 0 15px #16ff16;
-}
-}
-
-/* BUTTONS */
-
-.btn{
-
-width:100%;
-
-border:none;
-
-padding:13px;
-
-border-radius:12px;
-
-margin-top:14px;
-
-color:white;
-
-cursor:pointer;
-
-font-size:15px;
-
-font-weight:bold;
-
-transition:.3s;
-
-text-decoration:none;
-
-display:block;
-}
-
-.btn:hover{
-
-transform:translateY(-2px);
-}
-
-.primary{
-
-background:
-linear-gradient(90deg,
-#0d850d,
-#16ff16);
-
-box-shadow:
-0 0 12px rgba(0,255,0,.3),
-0 0 30px rgba(0,255,0,.15);
-}
-
-.secondary{
-
-background:rgba(255,255,255,.05);
-
-border:1px solid rgba(255,255,255,.1);
-
-backdrop-filter:blur(6px);
-}
-
-/* SUPPORT */
-
-.support{
-
-margin-top:22px;
-
-border:1px solid red;
-
-border-radius:15px;
-
-padding:15px;
-
-background:rgba(25,0,0,.3);
-
-box-shadow:
-0 0 15px rgba(255,0,0,.3),
-0 0 35px rgba(255,0,0,.15);
-}
-
-.support-title{
-
-color:#ff4444;
-
-margin-bottom:14px;
-
-font-size:15px;
-
-font-weight:bold;
-
-text-shadow:
-0 0 8px red;
-}
-
-.member{
-
-display:flex;
-
-align-items:center;
-
-gap:15px;
-
-padding:12px;
-
-border-radius:14px;
-
-background:rgba(255,255,255,.03);
-
-margin-bottom:12px;
-
-cursor:pointer;
-
-transition:.3s;
-}
-
-.member:hover{
-
-background:rgba(255,255,255,.08);
-
-transform:scale(1.02);
-}
-
-.avatar{
-
-width:55px;
-
-height:55px;
-
-border-radius:50%;
-
-overflow:hidden;
-
-border:2px solid red;
-
-box-shadow:
-0 0 12px rgba(255,0,0,.5),
-0 0 25px rgba(255,0,0,.3);
-}
-
-.avatar img{
-
-width:100%;
-height:100%;
-object-fit:cover;
-}
-
-.member-info{
-
-text-align:right;
-}
-
-.member-info h3{
-
-font-size:15px;
-}
-
-.member-info p{
-
-font-size:11px;
-
-color:#bdbdbd;
-}
-
-/* INPUTS */
-
-.input{
-
-width:100%;
-
-background:rgba(255,255,255,.05);
-
-border:1px solid #16ff16;
-
-color:white;
-
-padding:11px;
-
-border-radius:10px;
-
-margin-top:12px;
-
-outline:none;
-}
-
-textarea.input{
-
-resize:none;
-
-height:110px;
-}
-
-/* FOOTER */
-
-.footer{
-
-margin-top:28px;
-
-color:#16ff16;
-
-font-weight:bold;
-
-font-size:13px;
-
-letter-spacing:2px;
-
-line-height:25px;
-
-text-shadow:
-0 0 10px #16ff16,
-0 0 20px #16ff16,
-0 0 40px #16ff16;
-}
-
-.success{
-
-margin-top:14px;
-
-color:#16ff16;
-
-font-size:13px;
-
-display:none;
-}
-
-.page-title{
-
 font-size:22px;
-
-color:#16ff16;
-
-margin-bottom:20px;
-
-text-shadow:
-0 0 10px #16ff16;
+color:#1aff1a;
 }
 
-.back{
+/* CARDS */
+.cards{
+display:grid;
+grid-template-columns:repeat(3,1fr);
+gap:15px;
+margin-bottom:20px;
+}
 
-margin-top:20px;
+.card{
+background:#0b0f14;
+padding:15px;
+border-radius:12px;
+border:1px solid #1aff1a22;
+}
 
+.card h3{
+color:#1aff1a;
+}
+
+/* BOT LIST */
+.bot{
+background:#0b0f14;
+padding:15px;
+margin-top:10px;
+border-radius:10px;
+border:1px solid #1aff1a22;
+display:flex;
+justify-content:space-between;
+align-items:center;
+}
+
+/* BUTTON */
+.btn{
+padding:8px 12px;
+border:none;
+border-radius:8px;
+cursor:pointer;
+}
+
+.green{
+background:#1aff1a;
+color:#000;
+font-weight:bold;
+}
+
+.dark{
 background:#111;
+color:#fff;
 border:1px solid #333;
 }
 
-</style>
+/* FORM */
+input{
+width:100%;
+padding:10px;
+margin-top:10px;
+background:#111;
+border:1px solid #1aff1a33;
+color:#fff;
+border-radius:8px;
+}
 
+</style>
 </head>
 
 <body>
 
-<!-- الصفحة الرئيسية -->
+<!-- SIDEBAR -->
+<div class="sidebar">
 
-<div class="container active"
-id="home">
+<div class="logo">FARAON BOTS</div>
 
-<div class="logo">
-
-<img src="https://i.postimg.cc/Znbd3vLt/IMG-20260521-031324-970.jpg">
-
-</div>
-
-<div class="title">
-
-NUMBER VIP
-
-</div>
-
-<div class="status">
-
-<div class="dot"></div>
-
-السيرفر يعمل بشكل طبيعي
-
-</div>
-
-<a href="https://t.me/CR_NUMBER_BOT"
-class="btn primary">
-
-🚀 فتح البوت
-
-</a>
-
-<button class="btn primary"
-onclick="showPage('channels')">
-
-📢 قنوات البوت
-
-</button>
-
-<div class="support">
-
-<div class="support-title">
-
-👤 دعم البوت
-
-</div>
-
-<div class="member"
-onclick="showPage('developer')">
-
-<div class="avatar">
-
-<img src="https://i.postimg.cc/4NdmvgVq/IMG-20260202-193604.png">
-
-</div>
-
-<div class="member-info">
-
-<h3>
-
-محمد فرعون
-
-</h3>
-
-<p>
-
-مبرمج الموقع
-
-</p>
-
+<div class="menu">
+<button onclick="show('dashboard')">📊 Dashboard</button>
+<button onclick="show('create')">➕ Create Bot</button>
+<button onclick="show('bots')">🤖 My Bots</button>
 </div>
 
 </div>
 
-<div class="member"
-onclick="showPage('support')">
+<!-- MAIN -->
+<div class="main">
 
-<div class="avatar">
+<!-- DASHBOARD -->
+<div id="dashboard">
 
-<img src="https://i.postimg.cc/WbCbMJ2F/1779326255067.png">
-
+<div class="topbar">
+<div class="title">Dashboard</div>
 </div>
 
-<div class="member-info">
+<div class="cards">
 
-<h3>
+<div class="card">
+<h3>15,000+</h3>
+<p>Bots Created</p>
+</div>
 
-دعم البوت
+<div class="card">
+<h3>99.9%</h3>
+<p>Uptime</p>
+</div>
 
-</h3>
-
-<p>
-
-فريق العمل
-
-</p>
-
+<div class="card">
+<h3>24/7</h3>
+<p>Support</p>
 </div>
 
 </div>
 
 </div>
 
-<div class="footer">
+<!-- CREATE BOT -->
+<div id="create" style="display:none">
 
-FARAON
+<h2 style="color:#1aff1a">Create New Bot</h2>
 
-</div>
+<input id="name" placeholder="Bot Name">
+<input id="token" placeholder="Bot Token">
+<input id="chat" placeholder="Chat ID">
 
-</div>
+<button class="btn green" onclick="createBot()">Generate Bot</button>
 
-<!-- صفحة القنوات -->
-
-<div class="container"
-id="channels">
-
-<div class="page-title">
-
-📢 قنوات البوت
+<pre id="out" style="margin-top:15px;color:#1aff1a"></pre>
 
 </div>
 
-<a href="https://t.me/IPX_B"
-class="btn secondary">
+<!-- BOTS -->
+<div id="bots" style="display:none">
 
-قناة البوت 1
+<h2 style="color:#1aff1a">My Bots</h2>
 
-</a>
-
-<a href="https://t.me/NHP_G"
-class="btn secondary">
-
-قناة البوت 2
-
-</a>
-
-<a href="https://t.me/WX_C_J"
-class="btn secondary">
-
-قناة البوت 3
-
-</a>
-
-<button class="btn back"
-onclick="showPage('home')">
-
-⬅ رجوع
-
-</button>
+<div id="list"></div>
 
 </div>
-
-<!-- صفحة المبرمج -->
-
-<div class="container"
-id="developer">
-
-<div class="page-title">
-
-👑 التواصل مع المبرمج
-
-</div>
-
-<input type="text"
-id="devName"
-class="input"
-placeholder="اكتب اسمك">
-
-<textarea
-id="devMsg"
-class="input"
-placeholder="اكتب رسالتك إلى المبرمج"></textarea>
-
-<button class="btn primary"
-onclick="sendDeveloper()">
-
-📩 إرسال الرسالة
-
-</button>
-
-<div class="success"
-id="devSuccess">
-
-✅ تم إرسال الرسالة للمبرمج
-
-</div>
-
-<button class="btn back"
-onclick="showPage('home')">
-
-⬅ رجوع
-
-</button>
-
-</div>
-
-<!-- صفحة الدعم -->
-
-<div class="container"
-id="support">
-
-<div class="page-title">
-
-🛡️ التواصل مع الدعم الفني
-
-</div>
-
-<input type="text"
-id="supName"
-class="input"
-placeholder="اكتب اسمك">
-
-<textarea
-id="supMsg"
-class="input"
-placeholder="اكتب رسالتك للدعم الفني"></textarea>
-
-<button class="btn primary"
-onclick="sendSupport()">
-
-📩 إرسال الرسالة
-
-</button>
-
-<div class="success"
-id="supSuccess">
-
-✅ تم إرسال الرسالة للدعم الفني
-
-</div>
-
-<button class="btn back"
-onclick="showPage('home')">
-
-⬅ رجوع
-
-</button>
 
 </div>
 
 <script>
 
-document.addEventListener(
-'gesturestart',
-function(e){
+let bots = [];
 
-e.preventDefault();
+function show(id){
 
-}
-);
+document.querySelectorAll('.main > div')
+.forEach(e=>e.style.display='none');
 
-function showPage(id){
-
-document
-.querySelectorAll('.container')
-.forEach(page=>{
-
-page.classList.remove('active');
-
-});
-
-document
-.getElementById(id)
-.classList.add('active');
+document.getElementById(id).style.display='block';
 }
 
-/* حط التوكن هنا */
+function createBot(){
 
-const botToken =
-"PUT_BOT_TOKEN_HERE";
+let name = document.getElementById('name').value;
+let token = document.getElementById('token').value;
+let chat = document.getElementById('chat').value;
 
-const chatId =
-"7771042305";
-
-/* إرسال للمبرمج */
-
-async function sendDeveloper(){
-
-const name =
-document
-.getElementById("devName")
-.value.trim();
-
-const msg =
-document
-.getElementById("devMsg")
-.value.trim();
-
-if(!name || !msg){
-
-alert("اكتب الاسم والرسالة");
-
+if(!name||!token||!chat){
+alert("Fill all fields");
 return;
 }
 
-const text =
+let bot = {
+name,token,chat
+};
 
-`👑 رسالة للمبرمج
+bots.push(bot);
 
-👤 الاسم:
-${name}
+document.getElementById('out').innerText =
+"Bot Created: " + name;
 
-💬 الرسالة:
-${msg}`;
-
-await fetch(
-`https://api.telegram.org/bot${botToken}/sendMessage`,
-{
-
-method:"POST",
-
-headers:{
-
-"Content-Type":
-"application/json"
-},
-
-body:JSON.stringify({
-
-chat_id:chatId,
-
-text:text
-})
-});
-
-document
-.getElementById("devSuccess")
-.style.display = "block";
-
-setTimeout(()=>{
-
-document
-.getElementById("devSuccess")
-.style.display = "none";
-
-showPage('home');
-
-},2000);
+renderBots();
 }
 
-/* إرسال للدعم */
+function renderBots(){
 
-async function sendSupport(){
+let list = document.getElementById('list');
+list.innerHTML = "";
 
-const name =
-document
-.getElementById("supName")
-.value.trim();
+bots.forEach((b,i)=>{
 
-const msg =
-document
-.getElementById("supMsg")
-.value.trim();
+list.innerHTML += `
+<div class="bot">
+<div>
+<b>${b.name}</b><br>
+<small>${b.token.slice(0,10)}...</small>
+</div>
+<button class="btn dark" onclick="alert('Bot Running')">
+Run
+</button>
+</div>
+`;
 
-if(!name || !msg){
-
-alert("اكتب الاسم والرسالة");
-
-return;
-}
-
-const text =
-
-`🛡️ رسالة للدعم الفني
-
-👤 الاسم:
-${name}
-
-💬 الرسالة:
-${msg}`;
-
-await fetch(
-`https://api.telegram.org/bot${botToken}/sendMessage`,
-{
-
-method:"POST",
-
-headers:{
-
-"Content-Type":
-"application/json"
-},
-
-body:JSON.stringify({
-
-chat_id:chatId,
-
-text:text
-})
 });
 
-document
-.getElementById("supSuccess")
-.style.display = "block";
-
-setTimeout(()=>{
-
-document
-.getElementById("supSuccess")
-.style.display = "none";
-
-showPage('home');
-
-},2000);
 }
 
 </script>
 
 </body>
-
 </html>
