@@ -1,17 +1,19 @@
-from telegram.ext import ApplicationBuilder, CommandHandler, CallbackQueryHandler
+from telegram import Update
+from telegram.ext import ApplicationBuilder, CommandHandler, ContextTypes
 from config import BOT_TOKEN
 
-from handlers.start import start_handler
-from handlers.check import check_handler
-from handlers.menu import menu_handler
+
+async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    await update.message.reply_text("🤖 البوت شغال 100%")
 
 
 def main():
+    if not BOT_TOKEN:
+        raise ValueError("BOT_TOKEN is missing")
+
     app = ApplicationBuilder().token(BOT_TOKEN).build()
 
-    app.add_handler(CommandHandler("start", start_handler))
-    app.add_handler(CallbackQueryHandler(check_handler, pattern="check"))
-    app.add_handler(CallbackQueryHandler(menu_handler))
+    app.add_handler(CommandHandler("start", start))
 
     print("Bot is running...")
     app.run_polling()
