@@ -1,33 +1,23 @@
-from aiogram import Bot, Dispatcher, types
-from aiogram.types import ReplyKeyboardMarkup, KeyboardButton
-from aiogram.filters import Command
-import asyncio
 import os
+from telegram import Update
+from telegram.ext import ApplicationBuilder, CommandHandler, ContextTypes
 
+# هنا بنجيب التوكن من المتغير
 TOKEN = os.getenv("BOT_TOKEN")
 
-bot = Bot(token=TOKEN)
-dp = Dispatcher()
 
-# زرار واحد فقط
-keyboard = ReplyKeyboardMarkup(
-    keyboard=[
-        [KeyboardButton(text="تشغيل البوت 🚀")]
-    ],
-    resize_keyboard=True
-)
+async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    await update.message.reply_text("البوت شغال ✅")
 
-@dp.message(Command("start"))
-async def start(message: types.Message):
-    await message.answer("أهلاً 👋", reply_markup=keyboard)
 
-@dp.message()
-async def handle(message: types.Message):
-    if message.text == "تشغيل البوت 🚀":
-        await message.answer("البوت شغال ✅")
+def main():
+    app = ApplicationBuilder().token(TOKEN).build()
 
-async def main():
-    await dp.start_polling(bot)
+    app.add_handler(CommandHandler("start", start))
+
+    print("Bot is running...")
+    app.run_polling()
+
 
 if __name__ == "__main__":
-    asyncio.run(main())
+    main()
