@@ -1,0 +1,8 @@
+[phases.setup]
+nixPkgs = ["python311"]
+
+[start]
+cmd = "python main.py"
+
+[settings]
+python.github_attestations = false
