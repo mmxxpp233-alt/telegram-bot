@@ -1,24 +1,14 @@
-from telegram.ext import ContextTypes
+from config import CHANNELS, SUCCESS_MESSAGE
+from handlers.menu import show_menu
 from utils.channels import is_joined
-from handlers.menu import menu_keyboard
-from config import SUCCESS_MESSAGE, MENU_IMAGE, OWNER_USERNAME
 
-
-async def check_handler(update, context: ContextTypes.DEFAULT_TYPE):
+async def check_handler(update, context):
     query = update.callback_query
-    await query.answer()
-
     user_id = query.from_user.id
 
-    if await is_joined(user_id, context.bot):
-
-        await query.message.reply_text(SUCCESS_MESSAGE)
-
-        await query.message.reply_photo(
-            photo=MENU_IMAGE,
-            caption=f"🏠 اللوحة الرئيسية\n👨‍💻 المطور: {OWNER_USERNAME} 🟦",
-            reply_markup=menu_keyboard()
-        )
-
+    if await is_joined(user_id, context.bot, CHANNELS):
+        await query.message.delete()
+        await query.message.chat.send_message(SUCCESS_MESSAGE)
+        await show_menu(query.message)
     else:
         await query.answer("❌ لازم تشترك في كل القنوات", show_alert=True)
