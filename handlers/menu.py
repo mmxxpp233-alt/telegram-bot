@@ -1,6 +1,5 @@
 from telegram import InlineKeyboardButton, InlineKeyboardMarkup
-from config import MENU_IMAGE, OWNER_USERNAME
-
+from config import MENU_IMAGE, OWNER_NAME, OWNER_USERNAME
 
 def menu_keyboard():
     return InlineKeyboardMarkup([
@@ -8,21 +7,16 @@ def menu_keyboard():
         [InlineKeyboardButton("📜 الشروط", callback_data="rules")]
     ])
 
-
-async def show_menu(update):
-    await update.message.reply_photo(
+async def show_menu(message):
+    await message.reply_photo(
         photo=MENU_IMAGE,
-        caption=f"🏠 اللوحة الرئيسية\n👨‍💻 المطور: {OWNER_USERNAME} 🟦",
+        caption=f"""
+🏠 اللوحة الرئيسية
+👨‍💻 المطور: {OWNER_NAME}
+🔹 {OWNER_USERNAME}
+        """,
         reply_markup=menu_keyboard()
     )
-
 
 async def menu_handler(update, context):
-    query = update.callback_query
-    await query.answer()
-
-    await query.message.reply_photo(
-        photo=MENU_IMAGE,
-        caption=f"🏠 اللوحة الرئيسية\n👨‍💻 المطور: {OWNER_USERNAME} 🟦",
-        reply_markup=menu_keyboard()
-    )
+    await update.callback_query.answer()
