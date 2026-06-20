@@ -7,7 +7,7 @@ waiting_users = set()
 # START
 async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
     keyboard = [
-        [InlineKeyboardButton("⚡ BAD", callback_data="bad")]
+        [InlineKeyboardButton("البحث عن مستخدم 👳", callback_data="bad")]
     ]
     reply_markup = InlineKeyboardMarkup(keyboard)
 
