@@ -1,84 +1,124 @@
-from telegram import Update, InlineKeyboardButton, InlineKeyboardMarkup
-from telegram.ext import ApplicationBuilder, CommandHandler, CallbackQueryHandler, MessageHandler, ContextTypes, filters
+import asyncio
+from aiogram import Bot, Dispatcher, types, F
+from aiogram.filters import CommandStart
+
 from config import BOT_TOKEN, START_IMAGE
 
-waiting_users = set()
+bot = Bot(token=BOT_TOKEN)
+dp = Dispatcher()
 
-# START
-async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    keyboard = [
-        [InlineKeyboardButton("البحث عن مستخدم 👳", callback_data="bad")]
-    ]
-    reply_markup = InlineKeyboardMarkup(keyboard)
+# القنوات
+CHANNELS = ["@feraon_1", "@my_botg1", "@fraon10k"]
 
-    await update.message.reply_photo(
-        photo=START_IMAGE,
-        caption="👋 أهلاً بيك في البوت الاحترافي\n\nاضغط BAD للبحث عن معلومات مستخدم",
-        reply_markup=reply_markup
-    )
+# ---------------- CHECK SUB ----------------
+async def is_subscribed(user_id: int):
+    for ch in CHANNELS:
+        try:
+            member = await bot.get_chat_member(ch, user_id)
+            if member.status in ["left", "kicked"]:
+                return False
+        except:
+            return False
+    return True
 
-# زرار BAD
-async def button_handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    query = update.callback_query
-    await query.answer()
 
-    if query.data == "bad":
-        waiting_users.add(query.from_user.id)
+# ---------------- MAIN MENU ----------------
+def main_menu():
+    return types.InlineKeyboardMarkup(inline_keyboard=[
+        [types.InlineKeyboardButton(text="📱 رقم جديد", callback_data="new_number")]
+    ])
 
-        await query.message.reply_text("🔎 ابعت يوزر الشخص الآن (مثال: @username)")
 
-# استقبال اليوزر
-async def handle_message(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    user_id = update.message.from_user.id
+# ---------------- START ----------------
+@dp.message(CommandStart())
+async def start(message: types.Message):
 
-    if user_id not in waiting_users:
+    ok = await is_subscribed(message.from_user.id)
+
+    if not ok:
+        kb = types.InlineKeyboardMarkup(inline_keyboard=[
+            [types.InlineKeyboardButton(text="📢 قناة 1", url="https://t.me/feraon_1")],
+            [types.InlineKeyboardButton(text="📢 قناة 2", url="https://t.me/my_botg1")],
+            [types.InlineKeyboardButton(text="📢 قناة 3", url="https://t.me/fraon10k")],
+            [types.InlineKeyboardButton(text="🔄 تحقق", callback_data="check")]
+        ])
+
+        await message.answer_photo(
+            photo=START_IMAGE,
+            caption="❌ لازم تشترك في القنوات أولاً",
+            reply_markup=kb
+        )
         return
 
-    waiting_users.remove(user_id)
+    await message.answer_photo(
+        photo=START_IMAGE,
+        caption="🎉 تم التحقق بنجاح\nمرحباً بك",
+        reply_markup=main_menu()
+    )
 
-    username = update.message.text.strip()
 
-    try:
-        chat = await context.bot.get_chat(username)
+# ---------------- CHECK BUTTON ----------------
+@dp.callback_query(F.data == "check")
+async def check(call: types.CallbackQuery):
 
-        name = chat.first_name or "N/A"
-        bio = getattr(chat, "bio", "N/A")
+    ok = await is_subscribed(call.from_user.id)
 
-        # اللغة (قد لا تكون متاحة دايمًا)
-        lang = getattr(chat, "language_code", "N/A")
+    if ok:
+        await call.message.edit_caption(
+            caption="🎉 تم التحقق بنجاح\nأهلاً بيك",
+            reply_markup=main_menu()
+        )
+    else:
+        await call.answer("❌ اشترك في القنوات أولاً", show_alert=True)
 
-        text = (
-            f"👤 الاسم: {name}\n"
-            f"🔗 اليوزر: {username}\n"
-            f"📌 موجود: نعم\n"
-            f"📝 Bio: {bio}\n"
-            f"🌐 اللغة: {lang}"
+
+# ---------------- NEW NUMBER ----------------
+@dp.callback_query(F.data == "new_number")
+async def new_number(call: types.CallbackQuery):
+
+    kb = types.InlineKeyboardMarkup(inline_keyboard=[
+        [
+            types.InlineKeyboardButton(text="1", callback_data="1"),
+            types.InlineKeyboardButton(text="2", callback_data="2"),
+            types.InlineKeyboardButton(text="3", callback_data="3"),
+            types.InlineKeyboardButton(text="4", callback_data="4"),
+        ]
+    ])
+
+    await call.message.answer("📞 ابعت رقم الهاتف الآن")
+    await call.message.answer("📊 اختر نوع العملية:", reply_markup=kb)
+
+
+# ---------------- HANDLE NUMBER ----------------
+user_numbers = {}
+
+@dp.message(F.text)
+async def handle_text(message: types.Message):
+    text = message.text
+
+    if text.startswith("+") or text.isdigit():
+        user_numbers[message.from_user.id] = text
+
+        await message.delete()
+
+        await message.answer("⏳ جاري المعالجة...")
+
+        await asyncio.sleep(1)
+
+        await message.answer(
+            f"""
+📱 الرقم: {text}
+🌍 تم المعالجة
+✅ العملية ناجحة
+"""
         )
 
-        await update.message.reply_text(text)
 
-        photos = await context.bot.get_user_profile_photos(chat.id)
-
-        if photos.total_count > 0:
-            photo = photos.photos[0][-1].file_id
-            await context.bot.send_photo(update.effective_chat.id, photo)
-
-    except Exception:
-        await update.message.reply_text(
-            "❌ الحساب غير موجود أو خاص\n"
-            "📌 أو اليوزر خطأ"
-        )
-
-# تشغيل
-def main():
-    app = ApplicationBuilder().token(BOT_TOKEN).build()
-
-    app.add_handler(CommandHandler("start", start))
-    app.add_handler(CallbackQueryHandler(button_handler))
-    app.add_handler(MessageHandler(filters.TEXT & ~filters.COMMAND, handle_message))
-
+# ---------------- RUN ----------------
+async def main():
     print("Bot is running...")
-    app.run_polling()
+    await dp.start_polling(bot)
+
 
 if __name__ == "__main__":
-    main()
+    asyncio.run(main())
