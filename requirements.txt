@@ -3,4 +3,3 @@ aiohttp==3.9.5
 pillow
 pyzbar
 aiofiles
-magic-filter==1.0.12
