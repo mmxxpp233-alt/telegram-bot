@@ -1,25 +1,21 @@
 import asyncio
-
 from aiogram import Bot, Dispatcher
+from aiogram.fsm.storage.memory import MemoryStorage
 
-from config import BOT_TOKEN
+from handlers import callbacks, messages
 
-from handlers.start import router as start_router
-from handlers.callbacks import router as callbacks_router
-from handlers.messages import router as messages_router
+BOT_TOKEN = "PUT_YOUR_TOKEN_HERE"
+
+bot = Bot(token=BOT_TOKEN)
+dp = Dispatcher(storage=MemoryStorage())
+
+# ربط الملفات
+dp.include_router(callbacks.router)
+dp.include_router(messages.router)
 
 
 async def main():
-    bot = Bot(token=BOT_TOKEN)
-
-    dp = Dispatcher()
-
-    dp.include_router(start_router)
-    dp.include_router(callbacks_router)
-    dp.include_router(messages_router)
-
-    print("Bot Started")
-
+    print("Bot is running...")
     await dp.start_polling(bot)
 
 
