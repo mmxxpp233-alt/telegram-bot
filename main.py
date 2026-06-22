@@ -4,18 +4,18 @@ from aiogram.fsm.storage.memory import MemoryStorage
 
 from handlers import callbacks, messages
 
-BOT_TOKEN = "PUT_YOUR_TOKEN_HERE"
+BOT_TOKEN = "PUT_TOKEN_HERE"
 
 bot = Bot(token=BOT_TOKEN)
 dp = Dispatcher(storage=MemoryStorage())
 
-# ربط الملفات
+# ربط الراوترات
 dp.include_router(callbacks.router)
 dp.include_router(messages.router)
 
 
 async def main():
-    print("Bot is running...")
+    print("BOT IS RUNNING...")
     await dp.start_polling(bot)
 
 
