@@ -20,19 +20,19 @@ async def start_cmd(message):
             inline_keyboard=[
                 [
                     InlineKeyboardButton(
-                        text="𓏺 قناة ❶",
+                        text="𝗰𝗵𝗮𝗻𝗻𝗲𝗹❶",
                         url="https://t.me/feraon_1"
                     )
                 ],
                 [
                     InlineKeyboardButton(
-                        text="𓏺 قناة ❷",
+                        text="𝗰𝗵𝗮𝗻𝗻𝗲𝗹❷",
                         url="https://t.me/my_botg1"
                     )
                 ],
                 [
                     InlineKeyboardButton(
-                        text="𓏺 قناة ❸",
+                        text="𝗰𝗵𝗮𝗻𝗻𝗲𝗹❸",
                         url="https://t.me/fraon10k"
                     )
                 ],
