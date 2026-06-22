@@ -1,7 +1,6 @@
 from pyzbar.pyzbar import decode
 from PIL import Image
 
-
 def read_qr(path):
     img = Image.open(path)
     data = decode(img)
