@@ -19,15 +19,15 @@ async def start_cmd(message):
         kb = InlineKeyboardMarkup(
             inline_keyboard=[
                 [InlineKeyboardButton(text="𓏺 َِ𝘾َِ𝘩َِ𝘢َِ𝘯َِ𝘯َِ𝘦َِ𝘭 ❶", url="https://t.me/feraon_1")],
-                [InlineKeyboardButton(text="قتاه", url="https://t.me/my_botg1")],
-                [InlineKeyboardButton(text="📢 قناة 3", url="https://t.me/fraon10k")],
+                [InlineKeyboardButton(text="𓏺 َِ𝘾َِ𝘩َِ𝘢َِ𝘯َِ𝘯َِ𝘦َِ𝘭 ❷", url="https://t.me/my_botg1")],
+                [InlineKeyboardButton(text="𓏺 َِ𝘾َِ𝘩َِ𝘢َِ𝘯َِ𝘯َِ𝘦َِ𝘭 لازمurl="https://t.me/fraon10k")],
                 [InlineKeyboardButton(text="✅ تحقق", callback_data="check_sub")]
             ]
         )
 
         await message.answer_photo(
             photo=START_IMAGE,
-            caption="⚠️ لازم تشترك في القنوات أولاً",
+            caption="لازم تشترك في قنوات المطور اولا 🛡️",
             reply_markup=kb
         )
         return
