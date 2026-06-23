@@ -1,10 +1,9 @@
-from aiogram import Router
-from aiogram.filters import CommandStart
+from aiogram import Router, F
 from aiogram.types import InlineKeyboardMarkup, InlineKeyboardButton
 
+from handlers.subscription import check_subscriptions
 from keyboards.menus import main_menu
 from config import START_IMAGE
-from handlers.subscription import check_subscriptions
 
 router = Router()
 
@@ -18,23 +17,23 @@ def subscribe_keyboard():
     ])
 
 
-@router.message(CommandStart())
-async def start_cmd(message):
+@router.callback_query(F.data == "check_sub")
+async def check_sub(call):
 
-    user_name = message.from_user.first_name
-
-    ok = await check_subscriptions(message.bot, message.from_user.id)
+    ok = await check_subscriptions(call.bot, call.from_user.id)
 
     if not ok:
-        await message.answer_photo(
-            photo=START_IMAGE,
-            caption=f"⚠️ لازم تشترك أولاً يا {user_name} 🛡️",
-            reply_markup=subscribe_keyboard()
-        )
+        await call.answer("❌ لسه مش مشترك في كل القنوات", show_alert=True)
         return
 
-    await message.answer_photo(
+    await call.answer("✅ تم التحقق بنجاح")
+
+    await call.message.delete()
+
+    user_name = call.from_user.first_name
+
+    await call.message.answer_photo(
         photo=START_IMAGE,
-        caption=f"👋 أهلاً بك يا {user_name}\n\nتم دخولك بنجاح 🤖",
+        caption=f"🎉 شكراً لاشتراكك يا {user_name}\nتم دخولك للبوت 🤖",
         reply_markup=main_menu()
     )
