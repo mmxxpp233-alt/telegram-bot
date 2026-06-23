@@ -3,8 +3,9 @@ from aiogram import Bot, Dispatcher
 
 from config import BOT_TOKEN
 
-# 📌 استيراد الروترات (الملفات الأساسية)
+# 📌 استيراد الروترات
 from handlers import start, callbacks, messages
+from bot_commands import set_commands   # ⭐ أضفنا أوامر الثلاث نقاط
 
 
 async def main():
@@ -17,6 +18,9 @@ async def main():
     dp.include_router(start.router)
     dp.include_router(callbacks.router)
     dp.include_router(messages.router)
+
+    # ⭐ تفعيل أوامر الثلاث نقاط
+    await set_commands(bot)
 
     # 🚀 تشغيل البوت
     print("🚀 Bot is running...")
