@@ -11,7 +11,6 @@ router = Router()
 @router.callback_query(F.data == "check_sub")
 async def check_sub(call):
 
-    # ⏳ رسالة تحميل
     msg = await call.message.answer("⏳ جاري التحقق من الاشتراك...")
 
     await asyncio.sleep(1)
@@ -19,13 +18,11 @@ async def check_sub(call):
 
     ok = await check_subscriptions(call.bot, call.from_user.id)
 
-    # ❌ مش مشترك
     if not ok:
         await msg.edit_text("❌ أنت لسه مش مشترك في كل القنوات")
         await call.answer("غير مكتمل", show_alert=True)
         return
 
-    # 🟢 مشترك
     await msg.delete()
 
     await call.answer("✅ تم التحقق بنجاح")
