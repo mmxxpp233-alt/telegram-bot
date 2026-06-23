@@ -1,5 +1,5 @@
-aiogram==3.4.1
+qrcode
+gtts
 pillow
 pyzbar
-aiofiles
-qrcode[pil]
+requests
