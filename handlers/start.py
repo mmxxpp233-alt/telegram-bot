@@ -46,14 +46,3 @@ caption=f"""
 reply_markup=subscribe_keyboard()
 )
 return
-
-await message.answer_photo(
-photo=START_IMAGE,
-caption=f"""
-👋 أهلاً بك عزيزي {message.from_user.first_name}
-🤖 {BOT_NAME}
-
-اختر من القائمة 👇
-""",
-reply_markup=main_menu()
-)
