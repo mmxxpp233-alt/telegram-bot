@@ -2,6 +2,6 @@ aiogram==3.4.1
 pillow
 qrcode
 gtts
-requests
+aiohttp
+pyzbar
 opencv-python-headless
-numpy
