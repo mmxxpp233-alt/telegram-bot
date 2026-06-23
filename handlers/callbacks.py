@@ -30,7 +30,7 @@ async def check_sub(call):
     user_name = call.from_user.first_name
 
     await call.message.answer(
-        f"🎉 شكراً لاشتراكك في {بوت المنحرف}"
+        f"🎉 شكراً لاشتراكك في {BOT_NAME}"
     )
 
     await call.message.answer_photo(
