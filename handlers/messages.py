@@ -1,32 +1,62 @@
-import os
-from aiogram import Router, F
-from aiogram.types import Message
-from aiogram.fsm.context import FSMContext
-
-from services.qr import read_qr
-
-router = Router()
+from aiogram.types import InlineKeyboardMarkup, InlineKeyboardButton
 
 
-@router.message(F.photo)
-async def handle_photo(message: Message, state: FSMContext):
+def main_menu():
+    return InlineKeyboardMarkup(inline_keyboard=[
 
-    if await state.get_state() != "qr_wait":
-        return
+        # 1 - QR قراءة
+        [
+            InlineKeyboardButton(text="📷 قراءة QR", callback_data="qr_read")
+        ],
 
-    file = await message.bot.get_file(message.photo[-1].file_id)
+        # 2 - QR إنشاء
+        [
+            InlineKeyboardButton(text="🧾 إنشاء QR", callback_data="qr_create")
+        ],
 
-    path = f"qr_{message.from_user.id}.png"
+        # 3 - فحص روابط
+        [
+            InlineKeyboardButton(text="🔗 فحص الروابط", callback_data="check_link")
+        ],
 
-    await message.bot.download_file(file.file_path, path)
+        # 4 - تحويل نص لصوت
+        [
+            InlineKeyboardButton(text="🔊 تحويل نص لصوت", callback_data="tts")
+        ],
 
-    result = read_qr(path)
+        # 5 - زخرفة أسماء
+        [
+            InlineKeyboardButton(text="✨ زخرفة الأسماء", callback_data="decorate")
+        ],
 
-    os.remove(path)
+        # 6 - إنشاء يوزر تيليجرام
+        [
+            InlineKeyboardButton(text="👤 إنشاء يوزر", callback_data="new_user")
+        ],
 
-    await state.clear()
+        # 7 - اختصار الروابط
+        [
+            InlineKeyboardButton(text="✂️ اختصار الروابط", callback_data="short_link")
+        ],
 
-    if result:
-        await message.answer(f"📄 تم قراءة QR:\n\n{result}")
-    else:
-        await message.answer("❌ مفيش QR في الصورة")
+        # 8 - إنشاء بوت
+        [
+            InlineKeyboardButton(text="🤖 إنشاء بوت", callback_data="create_bot")
+        ],
+
+        # 9 - المطور
+        [
+            InlineKeyboardButton(text="👨‍💻 المطور", callback_data="developer")
+        ],
+
+        # 10 - حماية IP
+        [
+            InlineKeyboardButton(text="🛡️ حماية IP", callback_data="ip_protect")
+        ],
+
+        # إضافات احترافية
+        [
+            InlineKeyboardButton(text="ℹ️ شرح البوت", callback_data="info"),
+            InlineKeyboardButton(text="⚙️ الإعدادات", callback_data="settings")
+        ]
+    ])
