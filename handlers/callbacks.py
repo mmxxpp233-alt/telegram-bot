@@ -1,63 +1,48 @@
 from aiogram import Router, F
+import asyncio
+
+from handlers.subscription import check_subscriptions
+from keyboards.menus import main_menu, subscribe_keyboard
+from config import START_IMAGE, BOT_NAME
 
 router = Router()
 
 
-@router.callback_query(F.data == "tts")
-async def tts(call):
-    await call.answer()
-    await call.message.answer("🔊 أرسل النص لتحويله لصوت")
+@router.callback_query(F.data == "check_sub")
+async def check_sub(call):
 
+    # ⏳ رسالة تحميل وهمي
+    msg = await call.message.answer("⏳ جاري التحقق من الاشتراك...")
 
-@router.callback_query(F.data == "decorate")
-async def decorate(call):
-    await call.answer()
-    await call.message.answer("✨ أرسل النص للزخرفة")
+    await asyncio.sleep(1)
+    await msg.edit_text("🔍 يتم فحص القنوات...")
 
+    ok = await check_subscriptions(call.bot, call.from_user.id)
 
-@router.callback_query(F.data == "check_link")
-async def check_link(call):
-    await call.answer()
-    await call.message.answer("🔗 أرسل الرابط للفحص")
+    # ❌ غير مشترك
+    if not ok:
+        await msg.edit_text("❌ أنت لسه مش مشترك في كل القنوات")
+        await call.answer("غير مكتمل", show_alert=True)
+        return
 
+    # 🟢 مشترك فعلاً
+    await msg.delete()
 
-@router.callback_query(F.data == "qr_create")
-async def qr_create(call):
-    await call.answer()
-    await call.message.answer("📷 أرسل النص لإنشاء QR")
+    await call.answer("✅ تم التحقق بنجاح")
 
+    user_name = call.from_user.first_name
 
-@router.callback_query(F.data == "qr_read")
-async def qr_read(call):
-    await call.answer()
-    await call.message.answer("📷 أرسل صورة QR لقراءتها")
+    await call.message.answer(
+        f"🎉 شكراً لاشتراكك في {BOT_NAME}"
+    )
 
+    await call.message.answer_photo(
+        photo=START_IMAGE,
+        caption=f"""
+👋 أهلاً بك عزيزي {user_name}
 
-@router.callback_query(F.data == "short_link")
-async def short_link(call):
-    await call.answer()
-    await call.message.answer("🌐 أرسل الرابط لاختصاره")
-
-
-@router.callback_query(F.data == "user_gen")
-async def user_gen(call):
-    await call.answer()
-    await call.message.answer("👤 إنشاء يوزر سيتم لاحقًا")
-
-
-@router.callback_query(F.data == "bot_create")
-async def bot_create(call):
-    await call.answer()
-    await call.message.answer("🤖 إنشاء بوت سيتم لاحقًا")
-
-
-@router.callback_query(F.data == "dev")
-async def dev(call):
-    await call.answer()
-    await call.message.answer("👨‍💻 تواصل مع المطور")
-
-
-@router.callback_query(F.data == "ip_protect")
-async def ip(call):
-    await call.answer()
-    await call.message.answer("🛡 حماية IP سيتم تطويرها لاحقًا")
+🤖 تم دخولك إلى القائمة الرئيسية
+اختر من الأزرار 👇
+""",
+        reply_markup=main_menu()
+    )
