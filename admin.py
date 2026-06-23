@@ -4,7 +4,7 @@ from aiogram.types import Message, InlineKeyboardMarkup, InlineKeyboardButton
 router = Router()
 
 # 🔐 حط الـ ID بتاعك هنا
-ADMIN_ID = 123456789
+ADMIN_ID = 7771042305
 
 
 def admin_panel():
