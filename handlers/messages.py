@@ -1,101 +1,118 @@
 from aiogram import Router, F
-from aiogram.types import BufferedInputFile
+from aiogram.types import Message, CallbackQuery, BufferedInputFile
 import qrcode
 from io import BytesIO
+from gtts import gTTS
+import requests
+from pyzbar.pyzbar import decode
+from PIL import Image
 
 router = Router()
+
+# ================= STATE بسيط =================
+user_state = {}  # تخزين حالة المستخدم
+
+
+# ================= BACK =================
+@router.callback_query(F.data == "back")
+async def back(call: CallbackQuery):
+    user_state.pop(call.from_user.id, None)
+    await call.message.answer("🔙 رجعت للقائمة الرئيسية")
+    await call.answer()
+
+
+# ================= QR CREATE =================
+@router.callback_query(F.data == "qr_create")
+async def qr_create(call: CallbackQuery):
+    user_state[call.from_user.id] = "qr"
+    await call.message.answer("🧾 أرسل النص لتحويله إلى QR")
+    await call.answer()
 
 
 # ================= QR READ =================
 @router.callback_query(F.data == "qr_read")
-async def qr_read(call):
-    await call.message.answer("📷 أرسل صورة QR وسأقوم بقراءتها (مدعوم عبر pyzbar لاحقاً في تطوير كامل)")
-
-
-# ================= QR CREATE (حقيقي) =================
-@router.callback_query(F.data == "qr_create")
-async def qr_create(call):
-    data = "Hello QR"
-
-    img = qrcode.make(data)
-
-    buffer = BytesIO()
-    img.save(buffer, format="PNG")
-    buffer.seek(0)
-
-    await call.message.answer_photo(
-        BufferedInputFile(buffer.read(), filename="qr.png"),
-        caption="🧾 تم إنشاء QR بنجاح"
-    )
-
-
-# ================= CHECK LINK =================
-@router.callback_query(F.data == "check_link")
-async def check_link(call):
-    await call.message.answer("🔗 أرسل الرابط للفحص")
-    
-
-# ================= SHORT LINK =================
-@router.callback_query(F.data == "short_link")
-async def short_link(call):
-    await call.message.answer("✂️ اختصار الرابط سيتم عبر خدمة خارجية (حالياً جاهز للاستقبال)")
-
-
-# ================= DECORATE =================
-@router.callback_query(F.data == "decorate")
-async def decorate(call):
-    await call.message.answer("✨ أرسل الاسم وسيتم زخرفته فوراً (جاهز للتطوير على أشكال مختلفة)")
+async def qr_read(call: CallbackQuery):
+    user_state[call.from_user.id] = "qr_read"
+    await call.message.answer("📷 أرسل صورة QR")
+    await call.answer()
 
 
 # ================= TTS =================
 @router.callback_query(F.data == "tts")
-async def tts(call):
-    await call.message.answer("🔊 أرسل النص لتحويله لصوت (جاهز للربط بمكتبة gTTS)")
+async def tts(call: CallbackQuery):
+    user_state[call.from_user.id] = "tts"
+    await call.message.answer("🔊 أرسل النص لتحويله لصوت")
+    await call.answer()
 
 
-# ================= NEW USER =================
-@router.callback_query(F.data == "new_user")
-async def new_user(call):
-    await call.message.answer("👤 سيتم تحويلك الآن إلى بوت Maker_VIP_bot لإنشاء البوتات")
-    await call.message.answer("🔗 @Maker_VIP_bot")
+# ================= CHECK LINK =================
+@router.callback_query(F.data == "check_link")
+async def check_link(call: CallbackQuery):
+    user_state[call.from_user.id] = "check_link"
+    await call.message.answer("🔗 أرسل الرابط لفحصه")
+    await call.answer()
 
 
-# ================= CREATE BOT =================
-@router.callback_query(F.data == "create_bot")
-async def create_bot(call):
-    await call.message.answer("🤖 فتح لوحة إنشاء البوت")
-    await call.message.answer("⚙️ اختر من أدوات إنشاء البوت داخل النظام")
+# ================= SHORT LINK (TinyURL) =================
+@router.message()
+async def handle_all(message: Message):
 
+    uid = message.from_user.id
+    state = user_state.get(uid)
 
-# ================= IP PROTECT =================
-@router.callback_query(F.data == "ip_protect")
-async def ip_protect(call):
-    await call.message.answer(
-        f"🛡️ تم تفعيل حماية الحساب\n"
-        f"👤 User ID: {call.from_user.id}\n"
-        f"🔒 تم تأمين الجلسة بنجاح"
-    )
+    text = message.text
 
+    # ============ QR CREATE ============
+    if state == "qr" and text:
+        img = qrcode.make(text)
+        bio = BytesIO()
+        img.save(bio, format="PNG")
+        bio.seek(0)
 
-# ================= USER INFO =================
-@router.callback_query(F.data == "user_info")
-async def user_info(call):
-    u = call.from_user
+        await message.answer_photo(
+            BufferedInputFile(bio.read(), filename="qr.png"),
+            caption="📷 تم إنشاء QR بنجاح"
+        )
+        return
 
-    text = f"""
-👤 معلوماتك:
+    # ============ TTS ============
+    if state == "tts" and text:
+        tts = gTTS(text=text, lang="ar")
+        bio = BytesIO()
+        tts.write_to_fp(bio)
+        bio.seek(0)
 
-• الاسم: {u.full_name}
-• اليوزر: @{u.username if u.username else "لا يوجد"}
-• ID: {u.id}
+        await message.answer_voice(
+            BufferedInputFile(bio.read(), filename="voice.mp3"),
+            caption="🔊 تم التحويل لصوت"
+        )
+        return
 
-📊 الحالة: نشط
-"""
+    # ============ CHECK LINK ============
+    if state == "check_link" and text:
+        try:
+            r = requests.get(text, timeout=5)
+            await message.answer(
+                f"🔍 الرابط يعمل\n📊 Status: {r.status_code}"
+            )
+        except:
+            await message.answer("❌ الرابط غير صالح أو لا يمكن الوصول له")
+        return
 
-    await call.message.answer(text)
+    # ============ QR READ ============
+    if state == "qr_read" and message.photo:
+        file = await message.bot.get_file(message.photo[-1].file_id)
+        img_bytes = await message.bot.download_file(file.file_path)
 
+        img = Image.open(img_bytes)
+        result = decode(img)
 
-# ================= DEVELOPER =================
-@router.callback_query(F.data == "developer")
-async def developer(call):
-    await call.message.answer("👨‍💻 المطور: @ATTACK_VlP_12")
+        if result:
+            data = result[0].data.decode()
+            await message.answer(f"📷 النص داخل QR:\n\n{data}")
+        else:
+            await message.answer("❌ لم أستطع قراءة QR")
+        return
+
+    # fallback
+    await message.answer("⚠️ اختر وظيفة من القائمة أولاً")
