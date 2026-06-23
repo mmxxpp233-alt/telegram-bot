@@ -4,7 +4,7 @@ from aiogram.types import BotCommand
 
 async def set_commands(bot: Bot):
     commands = [
-        BotCommand(command="start", description="بدا البوت 🤖"),
+        BotCommand(command="start", description="بدا محادثه جديده [🤖]"),
     ]
 
     await bot.set_my_commands(commands)
