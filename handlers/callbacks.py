@@ -19,7 +19,7 @@ async def check_sub(call):
     ok = await check_subscriptions(call.bot, call.from_user.id)
 
     if not ok:
-        await msg.edit_text("❌ أنت لسه مش مشترك في كل القنوات")
+        await msg.edit_text("انت لست مشترك في قنوات المطور ")
         await call.answer("غير مكتمل", show_alert=True)
         return
 
@@ -30,7 +30,7 @@ async def check_sub(call):
     user_name = call.from_user.first_name
 
     await call.message.answer(
-        f"🎉 شكراً لاشتراكك في {BOT_NAME}"
+        f"🎉 شكراً لاشتراكك في {بوت المنحرف}"
     )
 
     await call.message.answer_photo(
