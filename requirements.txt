@@ -1,7 +1,7 @@
 aiogram==3.4.1
 pillow
-pyzbar
-aiofiles
 qrcode
 gtts
 requests
+opencv-python-headless
+numpy
