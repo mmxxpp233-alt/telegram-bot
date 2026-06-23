@@ -1,179 +1,176 @@
-import asyncio
-import random
-import string
+import qrcode
 import aiohttp
 from io import BytesIO
+from gtts import gTTS
 
 from aiogram import Router, F
-from aiogram.types import BufferedInputFile, CallbackQuery
+from aiogram.types import Message, CallbackQuery, BufferedInputFile
+from aiogram.fsm.context import FSMContext
 
-import qrcode
-from gtts import gTTS
+from handlers.states import BotStates
 
 router = Router()
 
-# حفظ اليوزرات لمنع التكرار
-used_users = set()
-
 
 # ================= BACK =================
-async def back_menu(call: CallbackQuery):
+@router.callback_query(F.data == "back")
+async def back(call: CallbackQuery, state: FSMContext):
+    await state.clear()
     await call.message.answer("🔙 رجوع للقائمة الرئيسية")
     await call.answer()
 
 
 # ================= QR CREATE =================
 @router.callback_query(F.data == "qr_create")
-async def qr_create(call):
-    msg = await call.message.answer("⏳ جاري إنشاء QR...")
+async def qr_create(call: CallbackQuery, state: FSMContext):
+    await state.set_state(BotStates.qr_create)
+    await call.message.answer("📷 ابعت النص لتحويله QR")
 
-    img = qrcode.make("QR DATA")
+
+@router.message(BotStates.qr_create)
+async def qr_create_text(message: Message, state: FSMContext):
+    img = qrcode.make(message.text)
 
     buffer = BytesIO()
     img.save(buffer, format="PNG")
     buffer.seek(0)
 
-    await msg.delete()
-
-    await call.message.answer_photo(
+    await message.answer_photo(
         BufferedInputFile(buffer.read(), filename="qr.png"),
-        caption="🧾 تم إنشاء QR بنجاح"
+        caption="🧾 تم إنشاء QR"
     )
 
+    await state.clear()
 
-# ================= QR READ (basic) =================
+
+# ================= QR READ =================
 @router.callback_query(F.data == "qr_read")
-async def qr_read(call):
-    await call.message.answer("📷 أرسل صورة QR (ميزة القراءة تحتاج تطوير مكتبة zbar بشكل كامل)")
+async def qr_read(call: CallbackQuery, state: FSMContext):
+    await state.set_state(BotStates.qr_read)
+    await call.message.answer("📷 ابعت صورة QR")
+
+@router.message(BotStates.qr_read)
+async def qr_read_img(message: Message, state: FSMContext):
+    await message.answer("❌ الخدمة غير متاحة حالياً بسبب الضغط على السيرفر")
+    await state.clear()
 
 
-# ================= TEXT TO SPEECH =================
-@router.callback_query(F.data == "tts")
-async def tts(call):
-    msg = await call.message.answer("🎤 اختر النوع: ولد أو بنت")
-
-    # تخزين بسيط
-    call.bot.user_data = {"tts": True}
-
-
-# استقبال نص TTS
-@router.message()
-async def handle_text(message):
-    data = getattr(message.bot, "user_data", {})
-
-    if data.get("tts"):
-        text = message.text
-
-        tts = gTTS(text=text, lang="ar")
-        bio = BytesIO()
-        tts.write_to_fp(bio)
-        bio.seek(0)
-
-        await message.answer_voice(
-            BufferedInputFile(bio.read(), filename="voice.mp3"),
-            caption="🔊 تم تحويل النص لصوت"
-        )
-
-        message.bot.user_data = {}
-
-
-# ================= CHECK LINK =================
+# ================= LINK CHECK =================
 @router.callback_query(F.data == "check_link")
-async def check_link(call):
-    await call.message.answer("🔗 أرسل الرابط للفحص")
+async def check_link(call: CallbackQuery, state: FSMContext):
+    await state.set_state(BotStates.link_check)
+    await call.message.answer("🔗 ابعت الرابط للفحص")
 
 
-@router.message()
-async def link_checker(message):
-    text = message.text
+@router.message(BotStates.link_check)
+async def check_link_process(message: Message, state: FSMContext):
 
-    if text.startswith("http"):
-        async with aiohttp.ClientSession() as session:
-            async with session.get(text) as r:
+    url = message.text
+
+    async with aiohttp.ClientSession() as session:
+        try:
+            async with session.get(url) as r:
                 status = r.status
+        except:
+            await message.answer("❌ الرابط غير صالح")
+            await state.clear()
+            return
 
-        await message.answer(
-            f"""🔍 نتيجة الفحص:
+    await message.answer(
+        f"""🔍 نتيجة الفحص:
 
-🌐 الرابط: {text}
+🌐 الرابط: {url}
 📊 الحالة: {status}
 """
-        )
+    )
+
+    await state.clear()
 
 
 # ================= SHORT LINK =================
 @router.callback_query(F.data == "short_link")
-async def short_link(call):
-    await call.message.answer("✂️ أرسل الرابط لاختصاره")
+async def short_link(call: CallbackQuery, state: FSMContext):
+    await state.set_state(BotStates.short_link)
+    await call.message.answer("✂️ ابعت الرابط لاختصاره")
 
 
-@router.message()
-async def shorten(message):
-    if message.text.startswith("http"):
-        async with aiohttp.ClientSession() as session:
-            async with session.get(f"https://tinyurl.com/api-create.php?url={message.text}") as r:
-                short = await r.text()
+@router.message(BotStates.short_link)
+async def short_link_process(message: Message, state: FSMContext):
 
-        await message.answer(f"🔗 الرابط المختصر:\n{short}")
+    url = message.text
+
+    async with aiohttp.ClientSession() as session:
+        async with session.get(f"https://tinyurl.com/api-create.php?url={url}") as r:
+            short = await r.text()
+
+    await message.answer(f"🔗 الرابط المختصر:\n{short}")
+
+    await state.clear()
+
+
+# ================= TTS =================
+@router.callback_query(F.data == "tts")
+async def tts(call: CallbackQuery, state: FSMContext):
+    await state.set_state(BotStates.tts_type)
+    await call.message.answer("🎤 اختار النوع: (ولد / بنت)")
+
+
+@router.message(BotStates.tts_type)
+async def tts_type(message: Message, state: FSMContext):
+
+    if message.text not in ["ولد", "بنت"]:
+        await message.answer("❌ اختار ولد أو بنت فقط")
+        return
+
+    await state.update_data(tts_type=message.text)
+    await state.set_state(BotStates.tts_text)
+
+    await message.answer("📝 ابعت النص لتحويله لصوت")
+
+
+@router.message(BotStates.tts_text)
+async def tts_text(message: Message, state: FSMContext):
+
+    data = await state.get_data()
+    voice_type = data.get("tts_type")
+
+    tts = gTTS(text=message.text, lang="ar")
+
+    bio = BytesIO()
+    tts.write_to_fp(bio)
+    bio.seek(0)
+
+    await message.answer_voice(
+        BufferedInputFile(bio.read(), filename="voice.mp3"),
+        caption=f"🔊 صوت ({voice_type})"
+    )
+
+    await state.clear()
 
 
 # ================= USER INFO =================
 @router.callback_query(F.data == "user_info")
-async def user_info(call):
+async def user_info(call: CallbackQuery):
+
     u = call.from_user
 
-    photo = await call.bot.get_user_profile_photos(u.id)
-
-    text = f"""
-👤 معلومات المستخدم:
+    await call.message.answer(
+        f"""👤 معلوماتك:
 
 • الاسم: {u.full_name}
 • اليوزر: @{u.username}
 • ID: {u.id}
 """
-
-    await call.message.answer(text)
-
-
-# ================= CREATE USER (REAL GENERATOR) =================
-@router.callback_query(F.data == "new_user")
-async def new_user(call):
-
-    chars = string.ascii_letters
-
-    users = []
-
-    while len(users) < 10:
-        u = "@" + "".join(random.choice(chars) for _ in range(4))
-
-        if u not in used_users:
-            used_users.add(u)
-            users.append(u)
-
-    text = "👤 Generated Users:\n\n" + "\n".join(users)
-
-    await call.message.answer(text)
+    )
 
 
 # ================= CREATE BOT =================
 @router.callback_query(F.data == "create_bot")
-async def create_bot(call):
-    await call.message.answer("🤖 افتح هذا البوت:\n@Maker_VlP_bot")
+async def create_bot(call: CallbackQuery):
+    await call.message.answer("🤖 افتح: @Maker_VlP_bot")
 
 
 # ================= IP PROTECT =================
 @router.callback_query(F.data == "ip_protect")
-async def ip(call):
-    await call.message.answer("🛡️ تم تفعيل حماية على حسابك (محاكاة آمنة)")
-
-
-# ================= DEVELOPER =================
-@router.callback_query(F.data == "developer")
-async def dev(call):
-    await call.message.answer("👨‍💻 المطور: @ATTACK_VlP_12")
-
-
-# ================= BACK BUTTON =================
-@router.callback_query(F.data == "back")
-async def back(call):
-    await back_menu(call)
+async def ip(call: CallbackQuery):
+    await call.message.answer("🛡️ تم تفعيل الحماية (تنبيه فقط)")
