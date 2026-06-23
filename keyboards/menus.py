@@ -7,7 +7,7 @@ def main_menu():
         [
             InlineKeyboardButton(text="📷 قراءة QR", callback_data="qr_read"),
             InlineKeyboardButton(text="🧾 إنشاء QR", callback_data="qr_create")
-        ],
+       ],
 
         [
             InlineKeyboardButton(text="🔗 فحص الروابط", callback_data="check_link"),
@@ -32,5 +32,13 @@ def main_menu():
         [
             InlineKeyboardButton(text="ℹ️ معلومات", callback_data="info"),
             InlineKeyboardButton(text="⚙️ الإعدادات", callback_data="settings")
+        ],
+
+        # الأزرار الجانبية للمستخدم
+        [
+            InlineKeyboardButton(text="🧹 مسح الشات", callback_data="clear_chat")
+        ],
+        [
+            InlineKeyboardButton(text="📖 شرح البوت", callback_data="bot_help")
         ]
     ])
