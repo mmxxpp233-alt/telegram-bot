@@ -23,21 +23,19 @@ async def start_cmd(message):
 
     ok = await check_subscriptions(message.bot, message.from_user.id)
 
-    # ❌ غير مشترك
     if not ok:
         await message.answer_photo(
             photo=SUB_IMAGE,
             caption=f"""
 👋 أهلاً بك يا {message.from_user.first_name}
 
-⚠️ يجب الاشتراك في القنوات أولاً
-ثم اضغط "تحقق" 👇
+⚠️ لازم تشترك في القنوات أولاً
+وبعدها اضغط تحقق 👇
 """,
             reply_markup=subscribe_keyboard()
         )
         return
 
-    # 🟢 مشترك
     await message.answer_photo(
         photo=START_IMAGE,
         caption=f"""
