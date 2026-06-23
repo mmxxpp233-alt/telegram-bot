@@ -23,26 +23,37 @@ async def start_cmd(message):
 
     ok = await check_subscriptions(message.bot, message.from_user.id)
 
-    if not ok:
-        await message.answer_photo(
-            photo=SUB_IMAGE,
-            caption=f"""
-👋 أهلاً بك يا {message.from_user.first_name}
+if not ok:
+await message.answer_photo(
+photo=SUB_IMAGE,
+caption=f"""
+👋 أهلاً بك عزيزي {message.from_user.first_name} ❤️
 
-⚠️ لازم تشترك في القنوات أولاً
-وبعدها اضغط تحقق 👇
+⚡ قبل المتابعة واستخدام جميع أدوات البوت
+يجب إتمام الاشتراك في القنوات الرسمية 🛡️
+
+📢 القنوات تحتوي على:
+• آخر التحديثات
+• المميزات الجديدة
+• الإعلانات المهمة
+• الدعم والمساعدة
+
+✅ بعد الاشتراك في جميع القنوات
+اضغط على زر «تحقق» لتفعيل حسابك فوراً.
+
+🔐 لن تتمكن من استخدام البوت قبل إكمال الاشتراك.
 """,
-            reply_markup=subscribe_keyboard()
-        )
-        return
+reply_markup=subscribe_keyboard()
+)
+return
 
-    await message.answer_photo(
-        photo=START_IMAGE,
-        caption=f"""
+await message.answer_photo(
+photo=START_IMAGE,
+caption=f"""
 👋 أهلاً بك عزيزي {message.from_user.first_name}
 🤖 {BOT_NAME}
 
 اختر من القائمة 👇
 """,
-        reply_markup=main_menu()
-    )
+reply_markup=main_menu()
+)
