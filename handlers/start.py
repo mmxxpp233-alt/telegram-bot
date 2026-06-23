@@ -27,22 +27,22 @@ if not ok:
 await message.answer_photo(
 photo=SUB_IMAGE,
 caption=f"""
-👋 أهلاً بك عزيزي {message.from_user.first_name} ❤️
+اهلا بك عزيزي {message.from_user.first_name}
 
-⚡ قبل المتابعة واستخدام جميع أدوات البوت
-يجب إتمام الاشتراك في القنوات الرسمية 🛡️
-
-📢 القنوات تحتوي على:
-• آخر التحديثات
-• المميزات الجديدة
-• الإعلانات المهمة
-• الدعم والمساعدة
-
-✅ بعد الاشتراك في جميع القنوات
-اضغط على زر «تحقق» لتفعيل حسابك فوراً.
-
-🔐 لن تتمكن من استخدام البوت قبل إكمال الاشتراك.
+يرجى الاشتراك في قنوات المطور لكي تتمكن من استخدام البوت
 """,
 reply_markup=subscribe_keyboard()
 )
 return
+
+await message.answer_photo(
+photo=START_IMAGE,
+caption=f"""
+اهلا بك {message.from_user.first_name}
+
+🤖 {BOT_NAME}
+
+اختر من القائمة 🖥️
+""",
+reply_markup=main_menu()
+)
