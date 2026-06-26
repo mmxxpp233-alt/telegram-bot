@@ -1,20 +1,48 @@
 import os
 
-# 🔑 توكن البوت (من Railway Variables)
-BOT_TOKEN = os.getenv("BOT_TOKEN")
+# =========================
+# BOT
+# =========================
 
-# 🤖 اسم البوت
-BOT_NAME = os.getenv("BOT_NAME", "My Bot")
+BOT_TOKEN = os.getenv("BOT_TOKEN", "")
 
-# 🖼️ صورة القائمة الرئيسية
-START_IMAGE = os.getenv("START_IMAGE")
+BOT_NAME = "Feraon Tools"
 
-# 🛑 صورة الاشتراك الإجباري
-SUB_IMAGE = os.getenv("SUB_IMAGE")
+# =========================
+# IMAGES
+# =========================
 
-# 📢 قنوات الاشتراك الإجباري
-CHANNELS = [
-    "@feraon_1",
-    "@my_botg1",
-    "@fraon10k"
+START_IMAGE = os.getenv("START_IMAGE", "")
+SUB_IMAGE = os.getenv("SUB_IMAGE", "")
+
+# =========================
+# DEVELOPER
+# =========================
+
+DEVELOPER_USERNAME = "ATTACK_VlP_12"
+
+# =========================
+# BOT MAKER
+# =========================
+
+BOT_MAKER_USERNAME = "Maker_VlP_bot"
+
+# =========================
+# FAKE NUMBERS WEBSITE
+# =========================
+
+NUMBERS_URL = "https://example.com"
+
+# =========================
+# CHANNELS
+# =========================
+
+CHANNEL_1 = "@feraon_1"
+CHANNEL_2 = "@my_botg1"
+CHANNEL_3 = "@fraon10k"
+
+REQUIRED_CHANNELS = [
+    CHANNEL_1,
+    CHANNEL_2,
+    CHANNEL_3
 ]
