@@ -1,7 +1,8 @@
 aiogram==3.4.1
-pillow
-qrcode
-aiohttp
-gtts
-pyzbar
-opencv-python-headless
+aiofiles
+Pillow
+qrcode[pil]
+requests
+edge-tts
+beautifulsoup4
+tldextract
