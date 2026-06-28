@@ -47,8 +47,8 @@ FAKE_NUMBERS_URL = "https://waedo.com/"
 # =========================
 # Voice
 # =========================
-MALE_VOICE = "en-US-GuyNeural"
-FEMALE_VOICE = "en-US-JennyNeural"
+MALE_VOICE = "male"
+FEMALE_VOICE = "female"
 
 # =========================
 # QR
