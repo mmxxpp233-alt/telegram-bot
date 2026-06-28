@@ -4,3 +4,4 @@ qrcode
 Pillow
 gTTS
 requests
+opencv-python-headless
