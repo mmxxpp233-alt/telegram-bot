@@ -1,8 +1,6 @@
-aiogram==3.4.1
-aiofiles
+aiogram==3.20.0.post0
+aiohttp
+qrcode
 Pillow
-qrcode[pil]
+gTTS
 requests
-edge-tts
-beautifulsoup4
-tldextract
