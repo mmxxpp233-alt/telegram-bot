@@ -1,25 +1,36 @@
 from aiogram.fsm.state import State, StatesGroup
 
+
 class BotStates(StatesGroup):
 
-# QR
-qr_create = State()
-qr_read = State()
+    # =========================
+    # 📱 QR
+    # =========================
+    qr_create = State()
+    qr_read = State()
 
-# Links
-short_link = State()
-check_link = State()
+    # =========================
+    # 🔗 LINKS
+    # =========================
+    short_link = State()
+    check_link = State()
 
-# Decoration
-decorate_type = State()
-decorate_text = State()
+    # =========================
+    # ✨ DECORATION
+    # =========================
+    decorate_text = State()
 
-# Text To Speech
-tts_gender = State()
-tts_text = State()
+    # =========================
+    # 🔊 TEXT TO SPEECH
+    # =========================
+    tts_text = State()
 
-# Username Generator
-username_type = State()
+    # =========================
+    # 🆔 USERNAME GENERATOR
+    # =========================
+    username_type = State()
 
-# General
-waiting_input = State()
+    # =========================
+    # 👤 USER INFO (اختياري استخدامه كـ placeholder)
+    # =========================
+    waiting_input = State()
