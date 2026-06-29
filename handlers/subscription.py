@@ -80,8 +80,7 @@ async def check_sub(call: CallbackQuery):
         call.bot,
         call.from_user.id,
     )
-
-if not ok:
+    if not ok:
         await msg.edit_text(
             "❌ أنت لست مشتركًا في جميع القنوات."
         )
