@@ -5,7 +5,7 @@ import os
 # =========================
 BOT_TOKEN = os.getenv("BOT_TOKEN", "")
 
-BOT_NAME = "𓏺 𝚨𝐋𝚳𝚴Ϟ𝛶𝟋 .↝ ❶"
+BOT_NAME = "𝐀𝑳𝐌𝐍𝐇𝐑𝐅 🇦🇱"
 
 # =========================
 # Images
