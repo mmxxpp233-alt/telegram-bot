@@ -5,7 +5,7 @@ import os
 # =========================
 BOT_TOKEN = os.getenv("BOT_TOKEN", "")
 
-BOT_NAME = "⚡ Feraon Tools"
+BOT_NAME = "𓏺 𝚨𝐋𝚳𝚴Ϟ𝛶𝟋 .↝ ❶"
 
 # =========================
 # Images
