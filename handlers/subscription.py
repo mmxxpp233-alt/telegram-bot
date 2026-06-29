@@ -23,19 +23,19 @@ def subscription_keyboard():
         inline_keyboard=[
             [
                 InlineKeyboardButton(
-                    text="✨ القناة الأولى",
+                    text="𝗰𝗵𝗮𝗻𝗻𝗲𝗹",
                     url=f"https://t.me/{CHANNELS[0].replace('@', '')}"
                 )
             ],
             [
                 InlineKeyboardButton(
-                    text="✨ القناة الثانية",
+                    text="𝗰𝗵𝗮𝗻𝗻𝗲𝗹",
                     url=f"https://t.me/{CHANNELS[1].replace('@', '')}"
                 )
             ],
             [
                 InlineKeyboardButton(
-                    text="✨ القناة الثالثة",
+                    text="𝗰𝗵𝗮𝗻𝗻𝗲𝗹",
                     url=f"https://t.me/{CHANNELS[2].replace('@', '')}"
                 )
             ],
