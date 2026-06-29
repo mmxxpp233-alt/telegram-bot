@@ -62,7 +62,7 @@ def main_menu():
             ],
             [
                 InlineKeyboardButton(
-                    text="👨‍💻 المطور",
+                    text="👨‍💻 المبرمج",
                     url=f"https://t.me/{DEVELOPER_USERNAME.lstrip('@')}"
                 ),
             ],
