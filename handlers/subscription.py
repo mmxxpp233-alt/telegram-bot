@@ -1,12 +1,22 @@
+import asyncio
+
 from aiogram import Router, F
 from aiogram.types import (
+    CallbackQuery,
     InlineKeyboardMarkup,
     InlineKeyboardButton,
 )
 
-from config import CHANNELS
+from config import (
+    CHANNELS,
+    BOT_NAME,
+    START_IMAGE,
+)
+
+from keyboards.main_menu import main_menu
 
 router = Router()
+
 
 def subscription_keyboard():
     return InlineKeyboardMarkup(
@@ -38,12 +48,13 @@ def subscription_keyboard():
         ]
     )
 
+
 async def check_subscriptions(bot, user_id: int):
     for channel in CHANNELS:
         try:
             member = await bot.get_chat_member(channel, user_id)
 
-            if member.status in ["left", "kicked"]:
+            if member.status in ("left", "kicked"):
                 return False
 
         except Exception:
@@ -51,52 +62,104 @@ async def check_subscriptions(bot, user_id: int):
 
     return True
 
-import asyncio
-
-from config import START_IMAGE, BOT_NAME
-from keyboards.main_menu import main_menu
-
 
 @router.callback_query(F.data == "check_sub")
-async def check_sub(call):
+async def check_sub(call: CallbackQuery):
 
-    msg = await call.message.answer("⏳ جاري التحقق من الاشتراك...")
+    msg = await call.message.answer(
+        "⏳ جاري التحقق من الاشتراك..."
+    )
 
     await asyncio.sleep(1)
 
-    await msg.edit_text("🔍 يتم فحص القنوات...")
+    await msg.edit_text(
+        "🔍 يتم فحص القنوات..."
+    )
 
     ok = await check_subscriptions(
         call.bot,
-        call.from_user.id
+        call.from_user.id,
     )
 
-if not ok:
-        await msg.edit_text("❌ أنت لست مشتركًا في جميع القنوات.")
-        await call.answer(
-            "اشترك أولًا ثم أعد المحاولة",
-            show_alert=True
-        )
-        return
+import asyncio
 
-    await msg.delete()
+from aiogram import Router, F
+from aiogram.types import (
+    CallbackQuery,
+    InlineKeyboardMarkup,
+    InlineKeyboardButton,
+)
 
-    await call.answer(
-        "✅ تم التحقق بنجاح"
+from config import (
+    CHANNELS,
+    BOT_NAME,
+    START_IMAGE,
+)
+
+from keyboards.main_menu import main_menu
+
+router = Router()
+
+
+def subscription_keyboard():
+    return InlineKeyboardMarkup(
+        inline_keyboard=[
+            [
+                InlineKeyboardButton(
+                    text="✨ القناة الأولى",
+                    url=f"https://t.me/{CHANNELS[0].replace('@', '')}"
+                )
+            ],
+            [
+                InlineKeyboardButton(
+                    text="✨ القناة الثانية",
+                    url=f"https://t.me/{CHANNELS[1].replace('@', '')}"
+                )
+            ],
+            [
+                InlineKeyboardButton(
+                    text="✨ القناة الثالثة",
+                    url=f"https://t.me/{CHANNELS[2].replace('@', '')}"
+                )
+            ],
+            [
+                InlineKeyboardButton(
+                    text="✅ تحقق",
+                    callback_data="check_sub"
+                )
+            ]
+        ]
     )
 
-    await call.message.answer(
-        f"🎉 شكراً لاشتراكك في {BOT_NAME}"
+
+async def check_subscriptions(bot, user_id: int):
+    for channel in CHANNELS:
+        try:
+            member = await bot.get_chat_member(channel, user_id)
+
+            if member.status in ("left", "kicked"):
+                return False
+
+        except Exception:
+            return False
+
+    return True
+
+
+@router.callback_query(F.data == "check_sub")
+async def check_sub(call: CallbackQuery):
+
+    msg = await call.message.answer(
+        "⏳ جاري التحقق من الاشتراك..."
     )
 
-    await call.message.answer_photo(
-        photo=START_IMAGE,
-        caption=f"""
-👋 أهلاً بك {call.from_user.first_name}
+    await asyncio.sleep(1)
 
-🤖 تم التحقق من اشتراكك بنجاح.
+    await msg.edit_text(
+        "🔍 يتم فحص القنوات..."
+    )
 
-اختر الخدمة التي تريدها من القائمة بالأسفل 👇
-""",
-        reply_markup=main_menu()
+    ok = await check_subscriptions(
+        call.bot,
+        call.from_user.id,
     )
