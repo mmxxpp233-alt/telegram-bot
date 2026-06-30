@@ -52,7 +52,7 @@ def main_menu():
             ],
             [
                 InlineKeyboardButton(
-                    text="📲 أرقام وهمية",
+                    text="ارقام فيك ✆ ",
                     url=FAKE_NUMBERS_URL
                 ),
                 InlineKeyboardButton(
