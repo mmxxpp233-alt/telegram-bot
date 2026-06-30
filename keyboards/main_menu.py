@@ -16,7 +16,7 @@ def main_menu():
                     callback_data="qr_create"
                 ),
                 InlineKeyboardButton(
-                    text="📷 قراءة QR",
+                    text="قراءة QR 🔳",
                     callback_data="qr_read"
                 ),
             ],
