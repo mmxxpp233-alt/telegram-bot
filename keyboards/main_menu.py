@@ -12,7 +12,7 @@ def main_menu():
         inline_keyboard=[
             [
                 InlineKeyboardButton(
-                    text="📱 إنشاء QR",
+                    text="انشاء QR 🔳",
                     callback_data="qr_create"
                 ),
                 InlineKeyboardButton(
