@@ -22,11 +22,11 @@ def main_menu():
             ],
             [
                 InlineKeyboardButton(
-                    text="🔗 اختصار روابط",
+                    text="اختصار الروابط 💮",
                     callback_data="short_link"
                 ),
                 InlineKeyboardButton(
-                    text="🛡️ فحص الروابط",
+                    text="فحص الروابط🔬",
                     callback_data="check_link"
                 ),
             ],
