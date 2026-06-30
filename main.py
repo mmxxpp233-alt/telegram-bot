@@ -8,6 +8,7 @@ from handlers.start import router as start_router
 from handlers.subscription import router as subscription_router
 
 from modules.qr.handler import router as qr_router
+from modules.links.handler import router as links_router
 
 
 async def main():
@@ -15,11 +16,13 @@ async def main():
 
     dp = Dispatcher()
 
+    # Handlers
     dp.include_router(start_router)
     dp.include_router(subscription_router)
 
-    # QR Module
+    # Modules
     dp.include_router(qr_router)
+    dp.include_router(links_router)
 
     print("✅ Bot Started")
 
