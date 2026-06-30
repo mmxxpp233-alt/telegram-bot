@@ -32,11 +32,11 @@ def main_menu():
             ],
             [
                 InlineKeyboardButton(
-                    text="✨ زخرفة النص",
+                    text="زخرفه اسماء 🥀",
                     callback_data="decorate"
                 ),
                 InlineKeyboardButton(
-                    text="🔊 تحويل نص لصوت",
+                    text="تحويل نص لصوت 🔈",
                     callback_data="tts"
                 ),
             ],
@@ -46,7 +46,7 @@ def main_menu():
                     callback_data="user_info"
                 ),
                 InlineKeyboardButton(
-                    text="🆔 إنشاء يوزر",
+                    text="صيد يوزر 👻",
                     callback_data="username"
                 ),
             ],
@@ -56,13 +56,13 @@ def main_menu():
                     url=FAKE_NUMBERS_URL
                 ),
                 InlineKeyboardButton(
-                    text="🤖 صانع البوتات",
+                    text="صانع بوتات 🤖",
                     url=f"https://t.me/{BOT_MAKER_USERNAME.lstrip('@')}"
                 ),
             ],
             [
                 InlineKeyboardButton(
-                    text="👨‍💻 المبرمج",
+                    text="المبـــࢪمج ☠",
                     url=f"https://t.me/{DEVELOPER_USERNAME.lstrip('@')}"
                 ),
             ],
