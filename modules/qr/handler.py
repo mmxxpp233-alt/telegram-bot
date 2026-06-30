@@ -24,7 +24,7 @@ async def qr_create(call: CallbackQuery, state: FSMContext):
     )
 
     await call.answer()
-  @router.message(QRState.waiting_for_text)
+    @router.message(QRState.waiting_for_text)
 async def receive_qr_text(message: Message, state: FSMContext):
 
     text = message.text.strip()
@@ -44,4 +44,3 @@ async def receive_qr_text(message: Message, state: FSMContext):
     )
 
     await state.clear()
-  
