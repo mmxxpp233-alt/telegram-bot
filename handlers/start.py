@@ -44,8 +44,8 @@ async def start(message: Message):
 
     await message.answer_photo(
         photo=START_IMAGE,
-        caption=f"""
-👋 أهلاً بك {message.from_user.first_name}
+        caption=f""
+         💝أهلاً بك {message.from_user.first_name}
 
 مرحبًا بك في {BOT_NAME}
 
